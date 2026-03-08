@@ -12,6 +12,8 @@ class User(db.Model):
     coins = db.Column(db.Integer, default = 1000)
     created_at = db.Column(db.DateTime, default = datetime.utcnow)
 
+    is_admin = db.Column(db.Boolean, default = False)
+
 class Event(db.Model):
     __tablename__ = "events"
 
@@ -23,18 +25,18 @@ class Event(db.Model):
     created_at = db.Column(db.DateTime, default = datetime.utcnow)
 
 class Bet(db.Model):
-    __tablename__ = "Bets"
+    __tablename__ = "bets"
 
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    events_id = db.Column(db.Integer, db.ForeignKey("events.id"))
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"))
 
     side = db.Column(db.String(3))
     amount = db.Column(db.Integer)
     odds_at_time = db.Column(db.Float)
 
-    timestamp = db.Column(db.DateTime, default = datetime.utcnow)
+    timestamp = db.Column(db.DateTime)
 
     __table_args__ = (
-        db.UniqueConstraint('user_id', 'event_id', name = 'unique_user_event')
+        db.UniqueConstraint('user_id', 'event_id', name='unique_user_event'),
     )

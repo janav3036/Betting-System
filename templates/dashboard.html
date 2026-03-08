@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Active events</h2>
+
+{% for event in events %}
+<div class="event-card">
+
+    <h3>{{ event.title }}</h3>
+    <p>{{ event.description }}</p>
+
+    <form action="/bet" method="POST" style="display:inline;">
+        <input type="hidden" name="event_id" value="{{ event.id }}">
+        <input type="hidden" name="side" value="YES">
+        <input type="number" name="amount" placeholder="Coins" min="1">
+        
+        <button type="submit">YES</button>
+    </form>
+
+    <form action="/bet" method="POST" style="display:inline;">
+        <input type="hidden" name="event_id" value="{{ event.id }}">
+        <input type="hidden" name="side" value="NO">
+        <input type="number" name="amount" placeholder="Coins" min="1">
+
+        <button type="submit">NO</button>
+    </form>
+
+</div>
+{% endfor %}
+
+{% endblock %}

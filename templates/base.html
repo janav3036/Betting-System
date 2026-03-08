@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Class Prediction Market</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f5f5;
+            margin: 0;
+        }
+
+        .navbar {
+            background: #222;
+            color: white;
+            padding: 15px;
+        }
+
+        .container {
+            padding: 15px;
+        }
+
+        .event-card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    College Prediction Market
+</div>
+
+<div style="padding:10px">
+    Coins: {{current_user_coins}}
+</div>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
