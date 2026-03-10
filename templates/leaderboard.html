@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Total Leaderboard</h2>
+
+<div class="event-card">
+
+<table style="width:100%; border-collapse: collapse;">
+
+<thead>
+<tr>
+    <th style="text-align:left;">Rank</th>
+    <th style="text-align:left;">User</th>
+    <th style="text-align:left;">Coins</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for user in total_users %}
+
+<tr {% if user.id == current_user.id %}style="font-weight:bold;"{% endif %}>
+    <td>{{ loop.index }}</td>
+    <td>{{ user.username }}</td>
+    <td>{{ user.coins }}</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+<h2 style="margin-top:30px;">Weekly Leaderboard</h2>
+
+<div class="event-card">
+
+<table style="width:100%; border-collapse: collapse;">
+
+<thead>
+<tr>
+    <th style="text-align:left;">Rank</th>
+    <th style="text-align:left;">User</th>
+    <th style="text-align:left;">Weekly Profit</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for row in weekly_results %}
+
+<tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ row.username }}</td>
+    <td>{{ row.weekly_profit | round(2) }}</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+{% endblock %}

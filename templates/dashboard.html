@@ -4,51 +4,70 @@
 
 <h2>Active events</h2>
 
-{% for event in events %}
-<div class="event-card">
+{% for data in event_data %}
+{%set event = data.event%}
+
     {% if event.status == "open" %}
-        <h3>{{ event.title }}</h3>
-        <p>{{ event.description }}</p>
-    
-        {% if current_user.is_admin %}
+        <div class="event-card">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.description }}</p>
 
-            <a href="{{ url_for('admin.resolve_event', event_id=event.id, result='YES') }}">
-                Resolve YES
-            </a>
+            {% if current_user.is_admin %}
 
-            <a href="{{ url_for('admin.resolve_event', event_id=event.id, result='NO') }}">
-                Resolve NO
-            </a>
-        {%else%}
-            <form action="/bet" method="POST" style="display:inline;">
-                <input type="hidden" name="event_id" value="{{ event.id }}">
-                <input type="hidden" name="side" value="YES">
-                <input type="number" name="amount" placeholder="Coins" min="1">
-                
-                <button type="submit">YES</button>
-            </form>
+                <a href="{{ url_for('admin.resolve_event', event_id=event.id, result='YES') }}">
+                    Resolve YES
+                </a>
+                |
+                <a href="{{ url_for('admin.resolve_event', event_id=event.id, result='NO') }}">
+                    Resolve NO
+                </a>
+            {%else%}
+                <form action="/bet" method="POST" style="display:inline;">
+                    <input type="hidden" name="event_id" value="{{ event.id }}">
+                    <input type="hidden" name="side" value="YES">
+                    <input type="number" name="amount" placeholder="Coins" min="1">
 
-            <form action="/bet" method="POST" style="display:inline;">
-                <input type="hidden" name="event_id" value="{{ event.id }}">
-                <input type="hidden" name="side" value="NO">
-                <input type="number" name="amount" placeholder="Coins" min="1">
+                    <button type="submit">YES</button>
+                </form>
 
-                <button type="submit">NO</button>
-            </form>
-            
-        {% endif %}
-  
+                <form action="/bet" method="POST" style="display:inline;">
+                    <input type="hidden" name="event_id" value="{{ event.id }}">
+                    <input type="hidden" name="side" value="NO">
+                    <input type="number" name="amount" placeholder="Coins" min="1">
+
+                    <button type="submit">NO</button>
+                </form>
+                {%if data.user_bet%}
+                Already Bet: {{data.user_bet.side}} - {{data.user_bet.amount}} @ {{data.user_bet.odds_at_time}}
+                {%endif%}
+            {% endif %}
+            <p>Yes Pool: {{data.yes_pool}} coins | No Pool: {{data.no_pool}} coins</p>
+            <p>Yes Odds: {{data.yes_odds}} | No Odds: {{data.no_odds}}</p>
+            <p>Yes Probability : {{data.yes_prob}} | No Probability : {{data.no_prob}}</p>
+            <div class="probability-bar">
+                <div class="yes-bar" style="width: {{data.yes_prob}}%">
+                    YES {{data.yes_prob}}%
+                </div>
+                <div class="no-bar" style="width: {{data.no_prob}}%">
+                    NO {{data.no_prob}}%
+                </div>
+            </div>
+
+        </div>
     {% endif %}
-</div>
 {% endfor %}
+
+
 <h2>Closed events</h2>
 
-{% for event in events %}
+{% for data in event_data %}
+{%set event = data.event%}
+{% if event.status == "resolved" %}
 <div class="event-card">
-    {% if event.status == "resolved" %}
-        <h3>{{ event.title }}</h3>
-        <p>{{ event.description }}</p>
-        <p><strong>RESOLVED: </strong>{{event.result}}</p>
-    {%endif%}
+    <h3>{{ event.title }}</h3>
+    <p>{{ event.description }}</p>
+    <p><strong>RESOLVED: </strong>{{event.result}}</p>
+</div>
+{%endif%}
 {%endfor%}
 {% endblock %}
