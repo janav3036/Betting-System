@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Create New Event</h2>
+<div class="event-card"> 
+    <form method="POST">
+        <div style="margin-bottom: 15px;">
+            <label><strong>Event Title</strong></label><br>
+            <input type="text" name="title" placeholder="Example: Professor will be late" required style="width: 400px; padding: 6px;">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label><strong>Description</strong></label><br>
+            <input type="text" name="description" placeholder="Example: Between Monday and Wednesday" required style="width: 400px; padding: 6px;">
+        </div>
+
+        <button type="submit">Create Event</button>
+    </form>
+</div>
+
+{% endblock %}

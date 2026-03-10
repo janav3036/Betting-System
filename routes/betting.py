@@ -9,18 +9,23 @@ def dashboard():
     if "user_id" not in session:
         return redirect(url_for('auth.login'))
     user = db.session.get(User, session["user_id"])
+    if user is None:
+        session.clear()
+        return redirect(url_for("auth.login"))
+
     events = Event.query.all()
-    return render_template("dashboard.html", events = events, current_user_coins = user.coins)
+    return render_template("dashboard.html", events = events, current_user_coins = user.coins, current_user = user)
 
 @betting_bp.route("/bet", methods = ["POST"])
 def place_bet():
     event_id = int(request.form.get("event_id"))
     side = request.form.get("side")
     amount = int(request.form.get("amount"))
-
-    user_id = 1
-    user = User.query.get(user_id)
-
+    if "user_id" not in session:
+        return redirect(url_for('auth.login'))
+    user_id = session["user_id"]
+    user = db.session.get(User, user_id)
+    
     if user.coins<amount:
         print("Not enough coins")
         return redirect(url_for("betting.dashboard"))

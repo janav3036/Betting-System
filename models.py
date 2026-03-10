@@ -24,6 +24,9 @@ class Event(db.Model):
     result = db.Column(db.String(10), nullable = True)
     created_at = db.Column(db.DateTime, default = datetime.utcnow)
 
+    status = db.Column(db.String(20), default="open")
+    result = db.Column(db.String(3), nullable=True)
+
 class Bet(db.Model):
     __tablename__ = "bets"
 

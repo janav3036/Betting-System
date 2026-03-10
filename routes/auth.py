@@ -4,9 +4,14 @@ import bcrypt
 
 auth_bp = Blueprint("auth", __name__)
 
-@auth_bp.route("/register", methods = ["POST", "GET"])
+@auth_bp.route("/register", methods = ["GET","POST"])
 def register():
-    if request =='POST':
+
+    print("METHOD:", request.method)
+
+    if request.method == "POST":
+        print("INSIDE POST BLOCK")
+    if request.method =='POST':
         username = request.form.get('username')
         password = request.form.get('password')
 
@@ -20,6 +25,7 @@ def register():
 
         db.session.add(user)
         db.session.commit()
+        print('User created')
 
         return redirect(url_for("auth.login"))
     
@@ -40,7 +46,7 @@ def login():
         
     return render_template('login.html')
 
-@auth_bp.route('/login')
+@auth_bp.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('auth.login'))

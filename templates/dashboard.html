@@ -6,27 +6,49 @@
 
 {% for event in events %}
 <div class="event-card">
+    {% if event.status == "open" %}
+        <h3>{{ event.title }}</h3>
+        <p>{{ event.description }}</p>
+    
+        {% if current_user.is_admin %}
 
-    <h3>{{ event.title }}</h3>
-    <p>{{ event.description }}</p>
+            <a href="{{ url_for('admin.resolve_event', event_id=event.id, result='YES') }}">
+                Resolve YES
+            </a>
 
-    <form action="/bet" method="POST" style="display:inline;">
-        <input type="hidden" name="event_id" value="{{ event.id }}">
-        <input type="hidden" name="side" value="YES">
-        <input type="number" name="amount" placeholder="Coins" min="1">
-        
-        <button type="submit">YES</button>
-    </form>
+            <a href="{{ url_for('admin.resolve_event', event_id=event.id, result='NO') }}">
+                Resolve NO
+            </a>
+        {%else%}
+            <form action="/bet" method="POST" style="display:inline;">
+                <input type="hidden" name="event_id" value="{{ event.id }}">
+                <input type="hidden" name="side" value="YES">
+                <input type="number" name="amount" placeholder="Coins" min="1">
+                
+                <button type="submit">YES</button>
+            </form>
 
-    <form action="/bet" method="POST" style="display:inline;">
-        <input type="hidden" name="event_id" value="{{ event.id }}">
-        <input type="hidden" name="side" value="NO">
-        <input type="number" name="amount" placeholder="Coins" min="1">
+            <form action="/bet" method="POST" style="display:inline;">
+                <input type="hidden" name="event_id" value="{{ event.id }}">
+                <input type="hidden" name="side" value="NO">
+                <input type="number" name="amount" placeholder="Coins" min="1">
 
-        <button type="submit">NO</button>
-    </form>
-
+                <button type="submit">NO</button>
+            </form>
+            
+        {% endif %}
+  
+    {% endif %}
 </div>
 {% endfor %}
+<h2>Closed events</h2>
 
+{% for event in events %}
+<div class="event-card">
+    {% if event.status == "resolved" %}
+        <h3>{{ event.title }}</h3>
+        <p>{{ event.description }}</p>
+        <p><strong>RESOLVED: </strong>{{event.result}}</p>
+    {%endif%}
+{%endfor%}
 {% endblock %}
