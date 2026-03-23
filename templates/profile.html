@@ -1,0 +1,70 @@
+{%extends 'base.html'%}
+{%block content%}
+<div class="container">
+    <h2>{{current_user.username}}'s Profile</h2>
+    <p>Balance: <strong>{{current_user.coins}}</strong> coins</p>
+
+    <div style="display:flex; gap:12px; flex-wrap: wrap; margin: 16px 0;">
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Bets</div>
+                <div class="stat-value">{{bet_data | length}}</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Wins</div>
+                <div class="stat-value">{{wins}}</div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-label">Losses</div>
+                <div class="stat-value">{{losses}}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Win Rate</div>
+                <div class="stat-value">{{win_rate}}</div>
+            </div>
+            <div class="stat-card {%if total_pnl > 0%}green{%else%}red{%endif%}">
+                <div class="stat-label">Net P&L</div>
+                <div class="stat-value">{{"+" if total_pnl>=0}}{{total_pnl}}</div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Bet History</h3>
+    {%if bet_data%}
+    <table class="bet-table">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Side</th>
+                <th>Amount</th>
+                <th>Odds</th>
+                <th>Outcome</th>
+                <th>P&L</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for b in bet_data%}
+            <tr>
+                <td>{{b.event_title}}</td>
+                <td class="{{'yes' if b.side=='YES' else 'no'}}">{{b.side}}</td>
+                <td>{{b.amount}}</td>
+                <td>{{b.odds}}</td>
+                <td class="{{'win' if b.outcome=='Win' else ('loss' if b.outcome=='Loss' else 'pending' )}}">{{b.outcome}}</td>
+                <td>
+                    {%if b.pnl is not none%}
+                    <span class="{{'win' if b.pl>0 else 'loss'}}">
+                        {{'+' if b.pl>=0}}{{b.pl}}
+                    </span>
+                    {%else%}
+                    -
+                    {%endif%}
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+    {%else%}
+    <p>No bets placed</p>
+    {%endif%}
+</div>
+{%endblock%}

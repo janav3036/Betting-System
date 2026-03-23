@@ -42,8 +42,19 @@
                 {%endif%}
             {% endif %}
             <p>Yes Pool: {{data.yes_pool}} coins | No Pool: {{data.no_pool}} coins</p>
-            <p>Yes Odds: {{data.yes_odds}} | No Odds: {{data.no_odds}}</p>
-            <p>Yes Probability : {{data.yes_prob}} | No Probability : {{data.no_prob}}</p>
+            <p>Yes Odds: {{data.yes_odds}} 
+                {%if data.yes_direction == "up"%}
+                <span style="color:green">↑</span>
+                {% elif data.yes_direction == "down" %}
+                <span style="color:red">↓</span>
+                {% endif %}
+                | No Odds: {{data.no_odds}} 
+                            {%if data.yes_direction == "up"%}
+                <span style="color:green">↑</span>
+                {% elif data.yes_direction == "down" %}
+                <span style="color:red">↓</span>
+                {% endif %}</p>
+            <p>Yes Probability : {{data.yes_prob}}% | No Probability : {{data.no_prob}}%</p>
             <div class="probability-bar">
                 <div class="yes-bar" style="width: {{data.yes_prob}}%">
                     YES {{data.yes_prob}}%

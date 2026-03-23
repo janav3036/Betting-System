@@ -20,7 +20,11 @@
 
 {% for user in total_users %}
 
-<tr {% if user.id == current_user.id %}style="font-weight:bold;"{% endif %}>
+<tr {% if user.id == current_user.id %}style="font-weight:bold;"{% endif %} class="
+{% if loop.index == 1 %}gold
+{% elif loop.index == 2 %}silver
+{% elif loop.index == 3 %}bronze
+{% endif %}">
     <td>{{ loop.index }}</td>
     <td>{{ user.username }}</td>
     <td>{{ user.coins }}</td>
@@ -51,7 +55,11 @@
 
 {% for row in weekly_results %}
 
-<tr>
+<tr class="
+{% if loop.index == 1 %}gold
+{% elif loop.index == 2 %}silver
+{% elif loop.index == 3 %}bronze
+{% endif %}">
     <td>{{ loop.index }}</td>
     <td>{{ row.username }}</td>
     <td>{{ row.weekly_profit | round(2) }}</td>

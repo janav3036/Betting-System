@@ -22,6 +22,10 @@ class Event(db.Model):
     description = db.Column(db.Text)
     status = db.Column(db.String(20), default = 'open') 
     result = db.Column(db.String(10), nullable = True)
+
+    prev_yes_odds = db.Column(db.Float, default = 0)
+    prev_no_odds = db.Column(db.Float, default = 0)
+    
     created_at = db.Column(db.DateTime, default = datetime.utcnow)
 
     status = db.Column(db.String(20), default="open")

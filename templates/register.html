@@ -1,24 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Register</h2>
-<div class='event-card'>
-    <form method="POST">
-        <div style="margin-bottom: 15px;">
-            <label><strong>Username</strong></label>
-            <input type="text" name="username" placeholder="Enter username" required style="width: 300px; padding: 6px;">
 
-        </div>
+<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
+    <form class="auth-form" method="POST">
+        <h2 style="margin:0 0 20px 0;">Register</h2>
 
-        <div style="margin-bottom:15px;">
-            <label><strong>Password</strong></label><br>
-            <input type="password" name="password" placeholder="Create a password" required style="width:300px; padding:6px;">
-        </div>
+        <label><strong>Username</strong></label>
+        <input type="text" name="username" placeholder="Enter username" required>
+
+        <label><strong>Password</strong></label>
+        <input type="password" name="password" placeholder="Create a password" required>
+
         <button type="submit">Register</button>
-
     </form>
-    <div style="margin-top: 15px;">
-        Already have an account? 
-        <a href="{{url_for('auth.login')}}">Login</a>
-    </div>
+
+    <p style="margin-top:12px; font-size:0.9rem; color:#aaa;">
+        Already have an account? <a href="{{ url_for('auth.login') }}">Login</a>
+    </p>
 </div>
+
 {% endblock %}

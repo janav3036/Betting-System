@@ -7,10 +7,6 @@ auth_bp = Blueprint("auth", __name__)
 @auth_bp.route("/register", methods = ["GET","POST"])
 def register():
 
-    print("METHOD:", request.method)
-
-    if request.method == "POST":
-        print("INSIDE POST BLOCK")
     if request.method =='POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -50,3 +46,56 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for('auth.login'))
+
+
+@auth_bp.route('/profile')
+def profile():
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+    
+    user = User.query.get(session['user_id'])
+    bets = Bet.query.filter_by(user_id = user.id).all()
+
+    bet_data = []
+    total_pnl = 0
+    wins = 0
+    losses = 0
+    
+    for bet in bets:
+        event = Event.query.get(bet.event_id)
+        if event.status == 'Resolved':
+            if bet.side == event.result:
+                pl = round((bet.amount * bet.odds_at_time) - bet.amount, 2)
+                outcome = "Win"
+                wins+=1
+            else: 
+                pl = -bet.amount
+                outcome = "Loss"
+                losses += 1
+            total_pnl += pl
+        else:
+            pl = None
+            outcome = "Pending"
+
+        bet_data.append({
+            "event_title": event.title,
+            "side": bet.side,
+            "amount": bet.amount,
+            "odds": bet.odds_at_time,
+            "outcome": outcome,
+            "pnl": pl
+        })
+
+    resolved = wins+losses
+    win_rate = round(wins/resolved,1) if resolved>0 else 0
+
+    return render_template(
+        'profile.html',
+        current_user = user,
+        bet_data = bet_data,
+        wins = wins,
+        losses = losses,
+        win_rate = win_rate,
+        total_pnl = round(total_pnl,2)
+    )
+    

@@ -1,0 +1,280 @@
+/* =====================
+   BASE
+===================== */
+body {
+    font-family: Arial;
+    background: #0f0f17;
+    color: #e0e0e0;
+    margin: 0;
+}
+
+a {
+    color: #7eb8f7;
+}
+
+a:hover {
+    color: #ffffff;
+}
+
+/* =====================
+   NAVBAR
+===================== */
+.navbar {
+    background: #1a1a2e;
+    color: white;
+    padding: 15px 20px;
+    border-bottom: 1px solid #2e2e4e;
+}
+
+.navbar a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: #ffffff;
+}
+
+/* =====================
+   CONTAINER
+===================== */
+.container {
+    padding: 20px;
+}
+
+/* =====================
+   EVENT CARDS (Dashboard)
+===================== */
+.event-card {
+    background: #1a1a2e;
+    border: 1px solid #2e2e4e;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.event-card h3 {
+    margin: 0 0 8px 0;
+    color: #ffffff;
+}
+
+.event-card p {
+    color: #aaa;
+    margin: 4px 0;
+}
+
+/* =====================
+   BUTTONS
+===================== */
+button {
+    padding: 8px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background: #2e2e4e;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+}
+
+button:hover {
+    background: #3e3e6e;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="password"] {
+    background: #1a1a2e;
+    border: 1px solid #2e2e4e;
+    color: #e0e0e0;
+    padding: 7px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+input::placeholder {
+    color: #666;
+}
+
+/* =====================
+   PROBABILITY BAR
+===================== */
+.probability-bar {
+    display: flex;
+    height: 25px;
+    width: 100%;
+    background: #2e2e4e;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.yes-bar {
+    background: #2ecc71;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    line-height: 25px;
+}
+
+.no-bar {
+    background: #e74c3c;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    line-height: 25px;
+}
+
+/* =====================
+   LEADERBOARD
+===================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1a1a2e;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #2e2e4e;
+    text-align: left;
+}
+
+th {
+    background: #12122a;
+    color: #aaa;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.gold   { background: #3a2e00; color: #d3af37; font-weight: bold; }
+.silver { background: #2a2a2a; color: #c4c4c4; font-weight: bold; }
+.bronze { background: #2e1a00; color: #ce8946; font-weight: bold; }
+
+/* =====================
+   PROFILE - STAT CARDS
+===================== */
+.stats-row {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background: #1a1a2e;
+    border: 1px solid #2e2e4e;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    min-width: 100px;
+}
+
+.stat-card.green { border-color: #2ecc71; }
+.stat-card.red   { border-color: #e74c3c; }
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin-bottom: 0.3rem;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* =====================
+   PROFILE - BET TABLE
+===================== */
+.bet-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: #1a1a2e;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.bet-table th,
+.bet-table td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #2e2e4e;
+    text-align: left;
+}
+
+.bet-table th {
+    background: #12122a;
+    color: #aaa;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.bet-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* =====================
+   OUTCOME COLORS
+===================== */
+.yes     { color: #2ecc71; font-weight: bold; }
+.no      { color: #e74c3c; font-weight: bold; }
+.win     { color: #2ecc71; }
+.loss    { color: #e74c3c; }
+.pending { color: #f39c12; }
+
+/* =====================
+   FORMS (Login / Register / Create Event)
+===================== */
+.auth-form{
+    background: #1a1a2e;
+    border: 1px solid #2e2e4e;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+}
+
+.auth-form label{
+    display: block;
+    margin-bottom: 4px;
+    color: #aaa;
+    font-size: 0.85rem;
+
+}
+
+.auth-form input, .auth-form textarea {
+    width: 100%;
+    margin-bottom: 14px;
+    box-sizing: border-box;
+}
+
+.auth-form textarea {
+    background: #1a1a2e;
+    border: 1px solid #2e2e4e;
+    color: #e0e0e0;
+    padding: 7px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    resize: vertical;
+}
+
+.auth-form button[type="submit"]{
+    background: #3b5bdb;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+
+}
+
+.auth-form button[type="submit"]:hover{
+    background: #4c6ef5;
+}
