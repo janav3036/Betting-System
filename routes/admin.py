@@ -49,7 +49,7 @@ def resolve_event(event_id, result):
     for bet in bets:
         if bet.side == result:
             winner = db.session.get(User, bet.user_id)
-            payout = bet.amount*2
+            payout = round(bet.amount*bet.odds_at_time)
             winner.coins += payout
 
     db.session.commit()

@@ -52,8 +52,8 @@
                 <td class="{{'win' if b.outcome=='Win' else ('loss' if b.outcome=='Loss' else 'pending' )}}">{{b.outcome}}</td>
                 <td>
                     {%if b.pnl is not none%}
-                    <span class="{{'win' if b.pl>0 else 'loss'}}">
-                        {{'+' if b.pl>=0}}{{b.pl}}
+                    <span class="{{'win' if b.pnl>0 else 'loss'}}">
+                        {{'+' if b.pnl>=0}}{{b.pnl}}
                     </span>
                     {%else%}
                     -

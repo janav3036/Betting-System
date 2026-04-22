@@ -13,6 +13,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default = datetime.utcnow)
 
     is_admin = db.Column(db.Boolean, default = False)
+    roll_number = db.Column(db.String(20), unique = True, nullable = False)
 
 class Event(db.Model):
     __tablename__ = "events"
@@ -20,8 +21,6 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(200))
     description = db.Column(db.Text)
-    status = db.Column(db.String(20), default = 'open') 
-    result = db.Column(db.String(10), nullable = True)
 
     prev_yes_odds = db.Column(db.Float, default = 0)
     prev_no_odds = db.Column(db.Float, default = 0)
@@ -47,3 +46,40 @@ class Bet(db.Model):
     __table_args__ = (
         db.UniqueConstraint('user_id', 'event_id', name='unique_user_event'),
     )
+
+class Group(db.Model):
+    __tablename__ = "groups"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable = False)
+    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    created_at = db.Column(db.DateTime, default = datetime.utcnow)
+
+class GroupMembership(db.Model):
+    __tablename__ = "group_memberships"
+
+    id = db.Column(db.Integer, primary_key = True)
+    group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    status = db.Column(db.String(20), nullable=False) #"invited" or "member"
+    joined_at = db.Column(db.DateTime, default = datetime.utcnow)
+    coins_at_join = db.Column(db.Integer, nullable=True)
+
+class PendingInvite(db.Model): 
+    __tablename__ = "pending_invites"
+
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), nullable=False)
+    roll_number = db.Column(db.String(20), nullable=False)
+    invited_at = db.Column(db.DateTime, default = datetime.utcnow)
+
+class GroupActivityLog(db.Model):
+    __tablename__ = "group_activity_logs"
+
+    id = db.Column(db.Integer, primary_key=True)
+    group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    action = db.Column(db.String(50), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    

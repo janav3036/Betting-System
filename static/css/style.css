@@ -278,3 +278,9 @@ tr:last-child td {
 .auth-form button[type="submit"]:hover{
     background: #4c6ef5;
 }
+
+.auth-form .error-msg {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+}

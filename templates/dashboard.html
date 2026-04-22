@@ -49,9 +49,9 @@
                 <span style="color:red">↓</span>
                 {% endif %}
                 | No Odds: {{data.no_odds}} 
-                            {%if data.yes_direction == "up"%}
+                            {%if data.no_direction == "up"%}
                 <span style="color:green">↑</span>
-                {% elif data.yes_direction == "down" %}
+                {% elif data.no_direction == "down" %}
                 <span style="color:red">↓</span>
                 {% endif %}</p>
             <p>Yes Probability : {{data.yes_prob}}% | No Probability : {{data.no_prob}}%</p>
@@ -59,7 +59,7 @@
                 <div class="yes-bar" style="width: {{data.yes_prob}}%">
                     YES {{data.yes_prob}}%
                 </div>
-                <div class="no-bar" style="width: {{data.no_prob}}%">
+                <div class="no-bar" style="flex: 1">
                     NO {{data.no_prob}}%
                 </div>
             </div>
