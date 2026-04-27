@@ -1,0 +1,62 @@
+{%extends "base.html"%}
+{%block content%}
+
+<h2 style="color: #ffffff; margin-bottom: 20px;">My Groups</h2>
+<!-- Groups invited to but NOT accepted-->
+{%if invites%}
+<h3 style="color: #aaa; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">Pending Invites</h3>
+{% for item in invites %}
+<div class="event-card" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <strong style="color: #ffffff;">{{ item.group.name }}</strong>
+        <p style="margin: 4px 0; color: #aaa; font-size: 0.85rem;">{{ item.member_count }} members</p>
+    </div>
+    <form method="POST" action="{{ url_for('groups.accept_invite', group_id=item.group.id) }}">
+        <button type="submit" style="background: #3b5bdb; color: white;">Accept</button>
+    </form>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- My Groups -->
+{% if active %}
+<h3 style="color: #aaa; font-size: 0.85rem; text-transform: uppercase; margin: 20px 0 10px;">Active Groups</h3>
+{% for item in active %}
+<a href="{{ url_for('groups.group_detail', group_id=item.group.id) }}" style="text-decoration: none;">
+    <div class="event-card" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <strong style="color: #ffffff;">{{ item.group.name }}</strong>
+            {% if item.is_owner %}<span style="color: #f39c12; font-size: 0.75rem; margin-left: 8px;">OWNER</span>{%
+            endif %}
+            <p style="margin: 4px 0; color: #aaa; font-size: 0.85rem;">{{ item.member_count }} / 10 members</p>
+        </div>
+        <div style="text-align: right;">
+            <div style="color: #aaa; font-size: 0.8rem;">Group P&L</div>
+            <div class="{{ 'win' if item.pnl >= 0 else 'loss' }}" style="font-size: 1.1rem; font-weight: bold;">
+                {{ '+' if item.pnl >= 0 }}{{ item.pnl }}
+            </div>
+        </div>
+    </div>
+</a>
+{% endfor %}
+{% else %}
+{%if not invites%}
+<p style="color: #aaa;">You're not in any groups yet.</p>
+{%endif%}
+{% endif %}
+
+
+{% if error %}
+<p class="error-msg" style="margin-bottom: 10px;">{{ error }}</p>
+{% endif %}
+<!-- Create Group -->
+<h3 style="color: #aaa; font-size: 0.85rem; text-transform: uppercase; margin: 30px 0 10px;">Create a Group</h3>
+<div class="auth-form">
+    <form method="POST" action="{{ url_for('groups.create_group') }}">
+        <label>Group Name</label>
+        <input type="text" name="name" placeholder="Enter group name" required>
+        <button type="submit">Create Group</button>
+    </form>
+</div>
+
+{% endblock %}

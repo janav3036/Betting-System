@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="color: #ffffff; margin: 0;">{{ group.name }}</h2>
+    <a href="{{ url_for('groups.groups') }}" style="font-size: 0.85rem;">← Back to Groups</a>
+</div>
+
+{% if error %}
+<p style="color: #e74c3c; margin-bottom: 15px;">{{ error }}</p>
+{% endif %}
+
+<!-- Pending invite confirmation for unregistered roll number -->
+{% if unregistered_roll %}
+<div class="event-card" style="border-color: #f39c12;">
+    <p style="color: #f39c12; margin: 0 0 10px;">No user found with roll number <strong>{{ unregistered_roll
+            }}</strong>. Send a pending invite anyway?</p>
+    <form method="POST" action="{{ url_for('groups.invite', group_id=group.id) }}" style="display: flex; gap: 10px;">
+        <input type="hidden" name="roll_number" value="{{ unregistered_roll }}">
+        <input type="hidden" name="confirm" value="yes">
+        <button type="submit" style="background: #3b5bdb; color: white;">Send Anyway</button>
+        <a href="{{ url_for('groups.group_detail', group_id=group.id) }}"><button type="button">Cancel</button></a>
+    </form>
+</div>
+{% endif %}
+
+<!-- Member Leaderboard -->
+<h3 style="color: #aaa; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">Members</h3>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Username</th>
+            <th>Coins</th>
+            <th>Group P&L</th>
+            {% if is_owner %}<th>Actions</th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for m in member_data %}
+        <tr
+            class="{{ 'gold' if loop.index0 == 0 else 'silver' if loop.index0 == 1 else 'bronze' if loop.index0 == 2 else '' }}">
+            <td>{{ loop.index }}</td>
+            <td>
+                {{ m.user.username }}
+                {% if m.is_owner %}<span style="color: #f39c12; font-size: 0.75rem; margin-left: 6px;">OWNER</span>{%
+                endif %}
+                {% if m.user.id == current_user.id %}<span
+                    style="color: #aaa; font-size: 0.75rem; margin-left: 6px;">(you)</span>{% endif %}
+            </td>
+            <td>{{ m.coins }}</td>
+            <td class="{{ 'win' if m.pnl >= 0 else 'loss' }}">{{ '+' if m.pnl >= 0 }}{{ m.pnl }}</td>
+            {% if is_owner and m.user.id != current_user.id %}
+            <td style="display: flex; gap: 8px;">
+                <form method="POST"
+                    action="{{ url_for('groups.remove_member', group_id=group.id, target_id=m.user.id) }}">
+                    <button type="submit" style="background: #e74c3c; color: white; font-size: 0.8rem;">Remove</button>
+                </form>
+                <form method="POST" action="{{ url_for('groups.transfer_ownership', group_id=group.id) }}">
+                    <input type="hidden" name="new_owner_id" value="{{ m.user.id }}">
+                    <button type="submit" style="font-size: 0.8rem;">Make Owner</button>
+                </form>
+            </td>
+            {% elif is_owner %}
+            <td></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        {% for item in invited %}
+        <tr style="opacity: 0.6;">
+            <td>—</td>
+            <td>
+                {{ item.user.username }}
+                <span style="color: #f39c12; font-size: 0.75rem; margin-left: 6px;">INVITED</span>
+            </td>
+            <td>—</td>
+            <td>—</td>
+            {% if is_owner %}
+            <td>
+                <form method="POST"
+                    action="{{ url_for('groups.remove_member', group_id=group.id, target_id=item.membership.user_id) }}">
+                    <button type="submit" style="background: #e74c3c; color: white; font-size: 0.8rem;">Cancel</button>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+
+        {% for p in pending %}
+        <tr style="opacity: 0.5;">
+            <td>—</td>
+            <td>
+                {{ p.roll_number }}
+                <span style="color: #aaa; font-size: 0.75rem; margin-left: 6px;">AWAITING REGISTRATION</span>
+            </td>
+            <td>—</td>
+            <td>—</td>
+            {% if is_owner %}<td></td>{% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+<!-- Owner Actions -->
+{% if is_owner %}
+<h3 style="color: #aaa; font-size: 0.85rem; text-transform: uppercase; margin: 30px 0 10px;">Invite by Roll Number</h3>
+<div class="auth-form">
+    <form method="POST" action="{{ url_for('groups.invite', group_id=group.id) }}">
+        <label>Roll Number</label>
+        <input type="text" name="roll_number" placeholder="e.g. R101" required>
+        <button type="submit">Send Invite</button>
+    </form>
+</div>
+
+<div style="margin-top: 20px; display: flex; gap: 10px;">
+    <form method="POST" action="{{ url_for('groups.delete_group', group_id=group.id) }}"
+        onsubmit="return confirm('Delete this group? This cannot be undone.')">
+        <button type="submit" style="background: #e74c3c; color: white;">Delete Group</button>
+    </form>
+</div>
+{% endif %}
+
+<!-- Leave -->
+{% if membership and membership.status == 'member' %}
+<div style="margin-top: 20px;">
+    <form method="POST" action="{{ url_for('groups.leave_group', group_id=group.id) }}"
+        onsubmit="return confirm('Leave this group?')">
+        <button type="submit" style="background: #2e2e4e; color: #e74c3c;">Leave Group</button>
+    </form>
+</div>
+{% endif %}
+
+{% endblock %}

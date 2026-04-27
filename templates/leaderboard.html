@@ -72,4 +72,32 @@
 </table>
 
 </div>
+
+<div>
+    <h2>Groups Leaderboard</h2>
+    <table>
+        <th>
+            <th style="text-align:left;">Rank</th>
+            <th style="text-align:left;">Group</th>
+            <th style="text-align:left;">Members</th>
+            <th style="text-align:left;">Total Coins</th>
+            <th style="text-align:left;">Avg Coins</th>
+        </th>
+        <tbody>
+            {%for row in group_data%}
+            <tr class="
+                {%if loop.index == 1%}gold
+                {%elif loop.index == 2%}silver
+                {%elif loop.index == 3%}bronze
+                {%endif%}">
+                <td>{{ loop.index }}</td>
+                <td>{{ row.group.name }}</td>
+                <td>{{ row.member_count }}</td>
+                <td>{{ row.total_coins }}</td>
+                <td>{{ row.average_coins }}</td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

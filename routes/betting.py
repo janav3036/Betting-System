@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import case
-from models import db, Event, Bet, User
+from models import db, Event, Bet, User, Group, GroupMembership
 
 betting_bp = Blueprint("betting", __name__)
 
@@ -113,12 +113,6 @@ def place_bet():
     yes_pool = sum(b.amount for b in bets if b.side == "YES")
     no_pool = sum(b.amount for b in bets if b.side == "NO")
 
-    # include current bet in pools
-    if side == "YES":
-        yes_pool += amount
-    else:
-        no_pool += amount
-
     total = yes_pool + no_pool
 
     # calculate odds
@@ -129,6 +123,13 @@ def place_bet():
 
     yes_odds = round(total / yes_pool, 2) if yes_pool > 0 else 2.0
     no_odds = round(total / no_pool, 2) if no_pool > 0 else 2.0
+
+    
+    # include current bet in pools
+    if side == "YES":
+        yes_pool += amount
+    else:
+        no_pool += amount
 
     event = db.session.get(Event, event_id)
 
@@ -170,7 +171,7 @@ def leaderboard():
     current_user = db.session.get(User, session["user_id"])
 
     # total leaderboard
-    total_users = User.query.order_by(User.coins.desc()).limit(7).all()
+    total_users = User.query.filter(User.is_admin==False).order_by(User.coins.desc()).limit(7).all()
 
     # weekly leaderboard
     week_start = datetime.utcnow() - timedelta(days=7)
@@ -195,10 +196,30 @@ def leaderboard():
         .limit(7)
         .all()
     )
+    
+    groups_data=[]
+    for group in Group.query.all():
+        memberships = GroupMembership.query.filter_by(group_id = group.id, status='member').all()
+        if not memberships:
+            continue
+        total_coins=0
+        total_pnl=0
+        for m in memberships:
+            member = db.session.get(User, m.user_id)
+            total_coins+=member.coins
+            total_pnl += (member.coins - m.coins_at_join) if m.coins_at_join is not None else 0
+        groups_data.append({
+            "group": group,
+            "total_coins": total_coins,
+            "average_coins" : round(total_coins/len(memberships), 1),
+            "total_pnl": total_pnl,
+            "member_count": len(memberships)
+        })
 
     return render_template(
         "leaderboard.html",
         total_users=total_users,
         weekly_results=weekly_results,
+        group_data=groups_data,
         current_user=current_user
     )

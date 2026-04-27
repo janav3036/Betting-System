@@ -3,8 +3,7 @@
 
 <head>
     <title>Class Prediction Market</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}"
-</head>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" </head>
 
 <body>
 
@@ -18,11 +17,14 @@
 
                 <a href="{{ url_for('betting.leaderboard') }}" style="color: white;">Leaderboard</a> |
 
+                <a href="{{ url_for('groups.groups') }}" style="color: white;">Groups</a> |
+
                 {%if current_user.is_admin%}
                 <a href="{{url_for('admin.create_event')}}" style="color: white;">Create an Event</a> |
+                <a href="{{url_for('admin.admin_groups')}}" style="color: white;">View Groups</a> |
                 {%else%}
                 Coins: {{current_user.coins}} |
-                <a href="{{url_for('auth.profile')}}" style="color: white;">Profile</a> | 
+                <a href="{{url_for('auth.profile')}}" style="color: white;">Profile</a> |
                 {%endif%}
                 Logged in as: {{current_user.username}} |
                 <a href="{{url_for('auth.logout')}}" style="color: white;">Logout</a>
