@@ -7,38 +7,41 @@
 
 <body>
 
-    <div class="navbar">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-
-            College Prediction Market
-            {%if current_user%}
-            <div>
-                <a href="{{ url_for('betting.dashboard') }}" style="color: white;">Dashboard</a> |
-
-                <a href="{{ url_for('betting.leaderboard') }}" style="color: white;">Leaderboard</a> |
-
-                <a href="{{ url_for('groups.groups') }}" style="color: white;">Groups</a> |
-
-                {%if current_user.is_admin%}
-                <a href="{{url_for('admin.create_event')}}" style="color: white;">Create an Event</a> |
-                <a href="{{url_for('admin.admin_groups')}}" style="color: white;">View Groups</a> |
-                {%else%}
-                Coins: {{current_user.coins}} |
-                <a href="{{url_for('auth.profile')}}" style="color: white;">Profile</a> |
-                {%endif%}
-                Logged in as: {{current_user.username}} |
-                <a href="{{url_for('auth.logout')}}" style="color: white;">Logout</a>
-
+    <nav class="navbar">
+        <a href="{{ url_for('betting.dashboard') }}" class="nav-brand">BetBoard</a>
+        {%if session.get('user_id')%}
+        <div class="nav-right">
+            <a href="{{ url_for('betting.dashboard') }}" class="nav-link">Home</a>
+            {%if current_user.is_admin%}
+                    <a href="{{url_for('admin.admin_groups')}}" class="nav-link">Manage Groups</a>
+                    <a href="{{url_for('admin.create_event')}}" class="nav-link">Create Event</a>
+            {%else%}     
+            <a href="{{ url_for('groups.groups') }}" class="nav-link">Groups</a>
+             {%endif%}
+            <a href="{{ url_for('betting.leaderboard') }}" class="nav-link">Leaderboard</a>
+            <a href="{{ url_for('auth.directory') }}" class="nav-link">Directory</a>
+            <span class="nav-coins">{{ current_user.coins }} Coins </span>
+            <div class="nav-profile-wrapper">
+                <button class="nav-profile-btn" onclick="toggleProfileDropdown()">
+                    {{ current_user.username }}
+                    <span class="nav-caret">▾</span>
+                </button>
+                <div class="nav-dropdown" id="profileDropdown">
+                    <a href="{{ url_for('auth.profile') }}">Profile</a>
+                    {%if not current_user.is_admin%}
+                    <a href="{{ url_for('auth.my_bets') }}">My Bets</a>                    
+                    {%endif%}
+                    <a href="{{ url_for('auth.logout') }}">Logout</a>
+                </div>
             </div>
-            {%endif%}
         </div>
-    </div>
-
+        {%endif%}
+    </nav>
 
     <div class="container">
         {% block content %}{% endblock %}
     </div>
-
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 
 </html>

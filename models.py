@@ -27,8 +27,11 @@ class Event(db.Model):
     
     created_at = db.Column(db.DateTime, default = datetime.utcnow)
 
+    event_type = db.Column(db.String(20), default="standard")
+    phase = db.Column(db.String(20), nullable=True)
+
     status = db.Column(db.String(20), default="open")
-    result = db.Column(db.String(3), nullable=True)
+    result = db.Column(db.String(20), nullable=True)
 
 class Bet(db.Model):
     __tablename__ = "bets"
@@ -37,10 +40,10 @@ class Bet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     event_id = db.Column(db.Integer, db.ForeignKey("events.id"))
 
-    side = db.Column(db.String(3))
+    side = db.Column(db.String(20))
     amount = db.Column(db.Integer)
     odds_at_time = db.Column(db.Float)
-
+    status = db.Column(db.String(10), default = "pending") #pending, won, lost
     timestamp = db.Column(db.DateTime)
 
     __table_args__ = (
@@ -82,4 +85,22 @@ class GroupActivityLog(db.Model):
     action = db.Column(db.String(50), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-    
+class Nomination(db.Model):
+    __tablename__ = "nominations"
+
+    id=db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
+    nominator_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    roll_number = db.Column(db.String(20), nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint('nominator_id', 'event_id', name='unique_nominator_event'),
+    )
+
+class Nominee(db.Model):
+    __tablename__ = "nominees"
+
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
+    roll_number = db.Column(db.String(20), nullable=False)
+    nomination_count = db.Column(db.Integer,default=0)

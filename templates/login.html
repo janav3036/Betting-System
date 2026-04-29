@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>Login</h2>
-<div class="event-card">
+<h2 style="margin-top: 0;">Login</h2>
+<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
     <form class="auth-form" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
         {%if error%}
         <div style="margin-bottom: 15px; color: red;">
             {{error}}
@@ -16,7 +18,7 @@
         </div>
         <div style="margin-bottom: 15px;">
             <label><strong>Password</strong></label>
-            <input type="text" name="password" placeholder="Enter password" required style="width: 300px; padding: 6px;">
+            <input type="password" name="password" placeholder="Enter password" required style="width: 300px; padding: 6px;">
 
         </div>    
         <button type="submit">Login</button>  
@@ -26,5 +28,4 @@
         <a href="{{url_for('auth.register')}}">Register</a>
     </div>
 </div>
-
 {% endblock %}

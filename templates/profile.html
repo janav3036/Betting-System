@@ -28,43 +28,13 @@
             </div>
         </div>
     </div>
+    <div style="margin-top: 32px; border-top: 1px solid #2e2e4e; padding-top: 16px;">
+        <form action="/delete_account" method="POST" onsubmit="return confirm('Permanently delete your account? This cannot be undone.');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" style="background:#c0392b; color:white; padding:8px 16px; border-radius:5px;">Delete Account</button>
+        </form>
+    </div>
 
-    <h3>Bet History</h3>
-    {%if bet_data%}
-    <table class="bet-table">
-        <thead>
-            <tr>
-                <th>Event</th>
-                <th>Side</th>
-                <th>Amount</th>
-                <th>Odds</th>
-                <th>Outcome</th>
-                <th>P&L</th>
-            </tr>
-        </thead>
-        <tbody>
-            {%for b in bet_data%}
-            <tr>
-                <td>{{b.event_title}}</td>
-                <td class="{{'yes' if b.side=='YES' else 'no'}}">{{b.side}}</td>
-                <td>{{b.amount}}</td>
-                <td>{{b.odds}}</td>
-                <td class="{{'win' if b.outcome=='Win' else ('loss' if b.outcome=='Loss' else 'pending' )}}">{{b.outcome}}</td>
-                <td>
-                    {%if b.pnl is not none%}
-                    <span class="{{'win' if b.pnl>0 else 'loss'}}">
-                        {{'+' if b.pnl>=0}}{{b.pnl}}
-                    </span>
-                    {%else%}
-                    -
-                    {%endif%}
-                </td>
-            </tr>
-            {%endfor%}
-        </tbody>
-    </table>
-    {%else%}
-    <p>No bets placed</p>
-    {%endif%}
+    <a href="{{ url_for('auth.my_bets') }}" class="nav-link">View all bets →</a>
 </div>
 {%endblock%}

@@ -16,6 +16,7 @@
     <p style="color: #f39c12; margin: 0 0 10px;">No user found with roll number <strong>{{ unregistered_roll
             }}</strong>. Send a pending invite anyway?</p>
     <form method="POST" action="{{ url_for('groups.invite', group_id=group.id) }}" style="display: flex; gap: 10px;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="roll_number" value="{{ unregistered_roll }}">
         <input type="hidden" name="confirm" value="yes">
         <button type="submit" style="background: #3b5bdb; color: white;">Send Anyway</button>
@@ -54,9 +55,11 @@
             <td style="display: flex; gap: 8px;">
                 <form method="POST"
                     action="{{ url_for('groups.remove_member', group_id=group.id, target_id=m.user.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" style="background: #e74c3c; color: white; font-size: 0.8rem;">Remove</button>
                 </form>
                 <form method="POST" action="{{ url_for('groups.transfer_ownership', group_id=group.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="new_owner_id" value="{{ m.user.id }}">
                     <button type="submit" style="font-size: 0.8rem;">Make Owner</button>
                 </form>
@@ -80,6 +83,8 @@
             <td>
                 <form method="POST"
                     action="{{ url_for('groups.remove_member', group_id=group.id, target_id=item.membership.user_id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
                     <button type="submit" style="background: #e74c3c; color: white; font-size: 0.8rem;">Cancel</button>
                 </form>
             </td>
@@ -109,6 +114,7 @@
 <h3 style="color: #aaa; font-size: 0.85rem; text-transform: uppercase; margin: 30px 0 10px;">Invite by Roll Number</h3>
 <div class="auth-form">
     <form method="POST" action="{{ url_for('groups.invite', group_id=group.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Roll Number</label>
         <input type="text" name="roll_number" placeholder="e.g. R101" required>
         <button type="submit">Send Invite</button>
@@ -118,6 +124,8 @@
 <div style="margin-top: 20px; display: flex; gap: 10px;">
     <form method="POST" action="{{ url_for('groups.delete_group', group_id=group.id) }}"
         onsubmit="return confirm('Delete this group? This cannot be undone.')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
         <button type="submit" style="background: #e74c3c; color: white;">Delete Group</button>
     </form>
 </div>
@@ -128,6 +136,7 @@
 <div style="margin-top: 20px;">
     <form method="POST" action="{{ url_for('groups.leave_group', group_id=group.id) }}"
         onsubmit="return confirm('Leave this group?')">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit" style="background: #2e2e4e; color: #e74c3c;">Leave Group</button>
     </form>
 </div>

@@ -3,7 +3,13 @@
 
 <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
     <form class="auth-form" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
         <h2 style="margin:0 0 20px 0;">Register</h2>
+
+        {% if error %}
+        <div style="color:red; margin-bottom:12px;">{{ error }}</div>
+        {% endif %}
 
         <label><strong>Username</strong></label>
         <input type="text" name="username" placeholder="Enter username" required>
@@ -11,9 +17,12 @@
         <label><strong>Password</strong></label>
         <input type="password" name="password" placeholder="Create a password" required>
 
-        
         <label><strong>Roll Number</strong></label>
-        <input type="text" name="roll_number" placeholder="Enter roll number" required>
+        <input type="text" name="roll_number" id="roll-input" placeholder="Auto-filled or type manually" required>
+
+        <label><strong>Find your roll number by name</strong></label>
+        <input type="text" id="name-search" placeholder="Type your name..." autocomplete="off">
+         <ul id="name-results" style="list-style:none; padding:0; margin:4px 0 12px 0;"></ul>
 
         <button type="submit">Register</button>
     </form>
@@ -22,5 +31,32 @@
         Already have an account? <a href="{{ url_for('auth.login') }}">Login</a>
     </p>
 </div>
+
+<script>
+const students = {{ students | tojson }};
+
+const searchInput = document.getElementById('name-search');
+const resultsList = document.getElementById('name-results');
+const rollInput = document.getElementById('roll-input');
+
+searchInput.addEventListener('input', function () {
+    const query = this.value.trim().toLowerCase();
+    resultsList.innerHTML = '';
+    if (!query) return;
+
+    const matches = students.filter(s => s.name.toLowerCase().includes(query));
+    matches.slice(0, 6).forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = s.name + ' — ' + s.roll_number;
+        li.style.cssText = 'cursor:pointer; padding:6px 8px; border-bottom:1px solid #333;';
+        li.addEventListener('click', function () {
+            rollInput.value = s.roll_number;
+            searchInput.value = s.name;
+            resultsList.innerHTML = '';
+        });
+        resultsList.appendChild(li);
+    });
+});
+</script>
 
 {% endblock %}

@@ -1,103 +1,131 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h2>Leaderboard</h2>
 
-<h2>Total Leaderboard</h2>
-
-<div class="event-card">
-
-<table style="width:100%; border-collapse: collapse;">
-
-<thead>
-<tr>
-    <th style="text-align:left;">Rank</th>
-    <th style="text-align:left;">User</th>
-    <th style="text-align:left;">Coins</th>
-</tr>
-</thead>
-
-<tbody>
-
-{% for user in total_users %}
-
-<tr {% if user.id == current_user.id %}style="font-weight:bold;"{% endif %} class="
-{% if loop.index == 1 %}gold
-{% elif loop.index == 2 %}silver
-{% elif loop.index == 3 %}bronze
-{% endif %}">
-    <td>{{ loop.index }}</td>
-    <td>{{ user.username }}</td>
-    <td>{{ user.coins }}</td>
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-</div>
-<h2 style="margin-top:30px;">Weekly Leaderboard</h2>
-
-<div class="event-card">
-
-<table style="width:100%; border-collapse: collapse;">
-
-<thead>
-<tr>
-    <th style="text-align:left;">Rank</th>
-    <th style="text-align:left;">User</th>
-    <th style="text-align:left;">Weekly Profit</th>
-</tr>
-</thead>
-
-<tbody>
-
-{% for row in weekly_results %}
-
-<tr class="
-{% if loop.index == 1 %}gold
-{% elif loop.index == 2 %}silver
-{% elif loop.index == 3 %}bronze
-{% endif %}">
-    <td>{{ loop.index }}</td>
-    <td>{{ row.username }}</td>
-    <td>{{ row.weekly_profit | round(2) }}</td>
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
+<div class="tab-row">
+  <button onclick="switchTab('weekly')" id="tab-weekly" class="tab-btn active-tab">Weekly</button>
+  <button onclick="switchTab('group')" id="tab-group" class="tab-btn">Group</button>
+  <button onclick="switchTab('alltime')" id="tab-alltime" class="tab-btn">All Time</button>
 </div>
 
-<div>
-    <h2>Groups Leaderboard</h2>
-    <table>
-        <th>
-            <th style="text-align:left;">Rank</th>
-            <th style="text-align:left;">Group</th>
-            <th style="text-align:left;">Members</th>
-            <th style="text-align:left;">Total Coins</th>
-            <th style="text-align:left;">Avg Coins</th>
-        </th>
-        <tbody>
-            {%for row in group_data%}
-            <tr class="
-                {%if loop.index == 1%}gold
-                {%elif loop.index == 2%}silver
-                {%elif loop.index == 3%}bronze
-                {%endif%}">
-                <td>{{ loop.index }}</td>
-                <td>{{ row.group.name }}</td>
-                <td>{{ row.member_count }}</td>
-                <td>{{ row.total_coins }}</td>
-                <td>{{ row.average_coins }}</td>
-            </tr>
-            {%endfor%}
-        </tbody>
+<div class="event-card tab-card">
+
+  <!-- Search Bar -->
+  <input type="text" id="search-input" oninput="filterTable()" placeholder="Search..." class="tab-search">
+
+  <!-- Weekly Table -->
+  <div id="tab-weekly-content">
+    <table style="width:100%; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th style="text-align:left;">Rank</th>
+          <th style="text-align:left;">User</th>
+          <th style="text-align:left;">Weekly Profit</th>
+        </tr>
+      </thead>
+      <tbody id="weekly-body">
+        {% for row in weekly_results %}
+        <tr class="{% if loop.index == 1 %}gold{% elif loop.index == 2 %}silver{% elif loop.index == 3 %}bronze{% endif %}">
+          <td>{{ loop.index }}</td>
+          <td>{{ row.username }}</td>
+          <td>{{ row.weekly_profit | round(2) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
+  </div>
+
+  <!-- Group Table -->
+  <div id="tab-group-content" style="display:none;">
+    <table style="width:100%; border-collapse: collapse; table-layout: fixed;">
+            <colgroup>
+                <col style="width:60px;">
+                <col style="width:150px;">
+                <col style="width:80px;">
+                <col style="width:110px;">
+                <col style="width:100px;">
+                <col style="width:100px;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th style="text-align:left;">Rank</th>
+                    <th style="text-align:left;">Group</th>
+                    <th style="text-align:left;">Members</th>
+                    <th style="text-align:left;">Total Coins</th>
+                    <th style="text-align:left;">Avg Coins</th>
+                    <th style="text-align:left;">Total P&L</th>
+                </tr>
+            </thead>
+            <tbody id="group-body">
+                {% for row in group_data %}
+                <tr class="
+                {% if loop.index == 1 %}gold
+                {% elif loop.index == 2 %}silver
+                {% elif loop.index == 3 %}bronze
+                {% endif %}">
+                    <td>{{ loop.index }}</td>
+                    <td>{{ row.group.name }}</td>
+                    <td>{{ row.member_count }}</td>
+                    <td>{{ row.total_coins }}</td>
+                    <td>{{ row.average_coins }}</td>
+                    <td>{{ row.total_pnl }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+  </div>
+
+  <!-- All Time Table -->
+  <div id="tab-alltime-content" style="display:none;">
+    <table style="width:100%; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th style="text-align:left;">Rank</th>
+          <th style="text-align:left;">User</th>
+          <th style="text-align:left;">Coins</th>
+        </tr>
+      </thead>
+      <tbody id="alltime-body">
+        {% for user in total_users %}
+        <tr {% if user.id == current_user.id %}style="font-weight:bold;"{% endif %} class="{% if loop.index == 1 %}gold{% elif loop.index == 2 %}silver{% elif loop.index == 3 %}bronze{% endif %}">
+          <td>{{ loop.index }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.coins }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
 </div>
+
+<script>
+  let currentTab = 'weekly';
+
+  function switchTab(tab) {
+    ['weekly', 'group', 'alltime'].forEach(t => {
+      document.getElementById('tab-' + t + '-content').style.display = 'none';
+      document.getElementById('tab-' + t).classList.remove('active-tab');
+    });
+    document.getElementById('tab-' + tab + '-content').style.display = 'block';
+    document.getElementById('tab-' + tab).classList.add('active-tab');
+    currentTab = tab;
+    document.getElementById('search-input').value = '';
+    filterTable();
+  }
+
+  function filterTable() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const tbody = document.getElementById(currentTab + '-body');
+    const rows = tbody.getElementsByTagName('tr');
+    for (let row of rows) {
+      const cell = row.getElementsByTagName('td')[1];
+      if (cell) {
+        row.style.display = cell.textContent.toLowerCase().includes(query) ? '' : 'none';
+      }
+    }
+  }
+</script>
+
 {% endblock %}

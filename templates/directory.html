@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Student Directory</h2>
+    <button id="filter-btn" onclick="toggleFilter()" style="margin-bottom: 16px;"> Show Registered</button>
+    <table class="bet-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Roll Number</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+       <tbody id="directory-body">
+            {% for e in entries %}
+            <tr data-registered="{{ 'yes' if e.registered else 'no' }}">
+                <td>{{ e.name }}</td>
+                <td>{{ e.roll_number }}</td>
+                <td>
+                    {% if e.registered %}Registered{% else %}—{% endif %}
+                    {% if current_user.is_admin and e.registered %}
+                    <form action="/admin/users/{{ e.user_id }}/delete" method="POST" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" onclick="return confirm('Delete {{ e.name }}?')">Delete</button>
+                    </form>
+                    {% endif %}
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+
+<script>
+    let showingAll = true;
+
+    function toggleFilter() {
+        showingAll = !showingAll;
+        const rows = document.querySelectorAll('#directory-body tr');
+        rows.forEach(row => {
+            if (!showingAll && row.dataset.registered === 'no') {
+                row.style.display = 'none';
+            }   else {
+                row.style.display = '';
+
+            }
+        });
+        document.getElementById('filter-btn').textContent = showingAll ? 'Show Registered' : 'Show All'
+    }
+</script>
+{% endblock %}

@@ -25,6 +25,7 @@
         <td>{{item.members}}</td>
         <td>
             <form method="POST" action="{{ url_for('admin.admin_delete_group', group_id=item.group.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit" style="background: #3b5bdb; color: white;">DELETE</button>
             </form>
         </td>

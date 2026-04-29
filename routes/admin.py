@@ -1,5 +1,5 @@
 from flask import Blueprint, request, redirect, url_for, session, render_template
-from models import db, Event, User, Bet, Group, GroupMembership, GroupActivityLog, PendingInvite
+from models import db, Event, User, Bet, Group, GroupMembership, GroupActivityLog, PendingInvite, Nominee, Nomination
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -15,10 +15,16 @@ def create_event():
     if request.method == "POST":
         title = request.form.get("title")
         description = request.form.get("description")
+        event_type = request.form.get("event_type", "standard")
 
+        if not title or not description:
+            return render_template("create_event.html", error="Fields are empty." , current_user=user)
+        
         event = Event(
             title=title,
-            description=description
+            description=description,
+            event_type = event_type,
+            phase="nomination" if event_type== "most_likely_to" else None
         )
 
         db.session.add(event)
@@ -28,7 +34,7 @@ def create_event():
 
         return redirect(url_for("betting.dashboard"))
     
-    return render_template("create_event.html")
+    return render_template("create_event.html", current_user=user)
 
 @admin_bp.route('/resolve/<int:event_id>/<result>')
 def resolve_event(event_id, result):
@@ -45,14 +51,20 @@ def resolve_event(event_id, result):
     event.result = result
 
     bets = Bet.query.filter_by(event_id=event.id).all()
+    try:
+        for bet in bets:
+            if bet.side == result:
+                bet.status = 'won'
+                winner = db.session.get(User, bet.user_id)
+                payout = round(bet.amount * bet.odds_at_time)
+                winner.coins += payout  
+            else:
+                bet.status = 'lost'
 
-    for bet in bets:
-        if bet.side == result:
-            winner = db.session.get(User, bet.user_id)
-            payout = round(bet.amount*bet.odds_at_time)
-            winner.coins += payout
-
-    db.session.commit()
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        return "Resolution Failed, please try again", 500
     return redirect(url_for('betting.dashboard'))
 
 @admin_bp.route("/admin/groups", methods=["GET"])
@@ -97,3 +109,72 @@ def admin_delete_group(group_id):
     db.session.commit()
     
     return redirect(url_for("admin.admin_groups", message=f"{name} has been deleted"))
+
+
+@admin_bp.route("/admin/mlt/<int:event_id>/reveal", methods=["POST"])
+def reveal_nominees(event_id):
+    if "user_id" not in session:
+        return redirect(url_for('auth.login'))
+    user = db.session.get(User, session["user_id"])
+    
+    if not user.is_admin:
+        return "Not authorized", 403
+    
+    event = db.session.get(Event, event_id)
+    if not event or event.event_type!="most_likely_to" or event.phase!="nomination":
+        return redirect(url_for('betting.dashboard'))
+    
+    nominations  = Nomination.query.filter_by(event_id=event_id).all()
+
+    counts={}
+    for n in nominations:
+        counts[n.roll_number] = counts.get(n.roll_number, 0)+1
+
+    top5 = sorted(counts.items(), key= lambda x: x[1], reverse=True)[:5]
+
+    for roll_number, count in top5:
+        nominee = Nominee(
+            event_id=event_id,
+            roll_number=roll_number,
+            nomination_count=count
+        )
+        db.session.add(nominee)
+
+    event.phase='betting'
+    db.session.commit()
+
+    return redirect(url_for('betting.dashboard'))
+
+@admin_bp.route('/admin/users/<int:user_id>/delete', methods=["POST"])
+def admin_delete_user(user_id):
+    if "user_id" not in session:
+        return redirect(url_for('auth.login'))
+    user= db.session.get(User, session['user_id'])
+    if not user.is_admin:
+        return "Not authorized", 403
+    
+    target = db.session.get(User, user_id)
+    if not target or target.is_admin:
+        return "Cannot delete this user", 400
+
+    owned_groups = Group.query.filter_by(owner_id=user_id).all()
+    for group in owned_groups:
+        other_members = GroupMembership.query.filter_by(
+            group_id=group.id, status="member"
+        ).filter(GroupMembership.user_id != user_id).first()
+        if other_members:
+            return f"User owns group '{group.name}' with other members. Transfer ownership first.", 400
+        GroupMembership.query.filter_by(group_id=group.id).delete()
+        GroupActivityLog.query.filter_by(group_id=group.id).delete()
+        PendingInvite.query.filter_by(group_id=group.id).delete()
+        db.session.delete(group)
+
+    Bet.query.filter_by(user_id=user_id).delete()
+    GroupMembership.query.filter_by(user_id=user_id).delete()
+    GroupActivityLog.query.filter_by(user_id=user_id).delete()
+    Nomination.query.filter_by(nominator_id=user_id).delete()
+
+    db.session.delete(target)
+    db.session.commit()
+
+    return redirect(url_for("auth.directory"))

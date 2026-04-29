@@ -1,0 +1,42 @@
+{%extends 'base.html'%}
+{%block content%}
+<div class="container">
+    <h2>My Bets</h2>
+    {%if bet_data%}
+    <table class="bet-table">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Side</th>
+                <th>Amount</th>
+                <th>Odds</th>
+                <th>Outcome</th>
+                <th>P&L</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for b in bet_data%}
+            <tr>
+                <td>{{b.event_title}}</td>
+                <td class="{{'yes' if b.side=='YES' else 'no'}}">{{b.side}}</td>
+                <td>{{b.amount}}</td>
+                <td>{{b.odds}}</td>
+                <td class="{{'win' if b.outcome=='Win' else ('loss' if b.outcome=='Loss' else 'pending')}}">{{b.outcome}}</td>
+                <td>
+                    {%if b.pnl is not none%}
+                    <span class="{{'win' if b.pnl>0 else 'loss'}}">
+                        {{'+' if b.pnl>=0}}{{b.pnl}}
+                    </span>
+                    {%else%}
+                    -
+                    {%endif%}
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+    {%else%}
+    <p>No bets placed yet.</p>
+    {%endif%}
+</div>
+{%endblock%}

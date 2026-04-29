@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-
+{%if error%}
+        <div style="margin-bottom: 15px; color: red;">
+            {{error}}
+        </div>
+{%endif%}
 <h2>Create New Event</h2>
 <div class="event-card"> 
     <form class="auth-form" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
         <div style="margin-bottom: 15px;">
             <label><strong>Event Title</strong></label><br>
             <input type="text" name="title" placeholder="Example: Professor will be late" required style="width: 400px; padding: 6px;">
@@ -12,6 +18,15 @@
         <div style="margin-bottom: 15px;">
             <label><strong>Description</strong></label><br>
             <input type="text" name="description" placeholder="Example: Between Monday and Wednesday" required style="width: 400px; padding: 6px;">
+        </div>
+
+        <div>
+            <label>Event Type</label>
+                <select name="event_type">
+                    <option value="standard">Standard (YES/NO)</option>
+                    <option value="most_likely_to">Most Likely To</option>
+                </select>
+
         </div>
 
         <button type="submit">Create Event</button>
