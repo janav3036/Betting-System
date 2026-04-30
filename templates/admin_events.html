@@ -36,8 +36,13 @@
             <td>{{ e.result if e.result else "—" }}</td>
             <td>{{ row.bet_count }}</td>
             <td>
+                {% if e.status == 'open' %}
+                {% set confirm_msg = 'Delete "' + e.title + '"? All ' + row.bet_count|string + ' bet(s) will be refunded.' %}
+                {% else %}
+                {% set confirm_msg = 'Delete "' + e.title + '"? This cannot be undone.' %}
+                {% endif %}
                 <form method="POST" action="{{ url_for('admin.delete_event', event_id=e.id) }}"
-                    onsubmit="return confirm('{% if e.status == \"open\" %}Delete \"{{ e.title }}\"? All {{ row.bet_count }} bet(s) will be refunded.{% else %}Delete \"{{ e.title }}\"? This cannot be undone.{% endif %}')">
+                    onsubmit="return confirm({{ confirm_msg | tojson }})">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" style="background:#8b3020; color:#e8dfc8; padding:5px 12px; font-size:0.8rem; margin:0;">Delete</button>
                 </form>
