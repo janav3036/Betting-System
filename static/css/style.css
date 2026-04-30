@@ -546,6 +546,8 @@ tr:last-child td {
     position: relative;
     z-index: 0;
     padding: 20px;
+    aspect-ratio: unset;
+    cursor: default;
 }
 
 .tab-search {
@@ -579,6 +581,76 @@ select option {
     font-size: 0.85rem
 }
 
+
+/* =====================
+   HOW TO PAGE
+===================== */
+.how-to-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.how-to-card {
+    background: #201d12;
+    border: 1px solid #3d2e1e;
+    border-radius: 8px;
+    padding: 22px 20px;
+    position: relative;
+}
+
+.how-to-card h3 {
+    margin: 0 0 12px 0;
+    color: #e8dfc8;
+    font-size: 1rem;
+}
+
+.how-to-card p {
+    color: #9a8c78;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin: 0 0 10px 0;
+}
+
+.how-to-card p:last-child {
+    margin-bottom: 0;
+}
+
+.how-to-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #2f5d20;
+    background: rgba(47, 93, 32, 0.15);
+    border: 1px solid #2f5d20;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.how-to-example {
+    background: #14130a;
+    border: 1px solid #3d2e1e;
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    color: #e8dfc8;
+    margin-top: 10px;
+}
+
+.how-to-tip {
+    background: rgba(196, 147, 63, 0.08);
+    border: 1px solid #c4933f;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 0.88rem;
+    color: #9a8c78;
+    line-height: 1.6;
+}
 
 /* =====================
    DANGER ZONE

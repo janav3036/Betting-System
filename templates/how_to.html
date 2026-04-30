@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>How to Play</h2>
+<p style="color:#9a8c78; margin-bottom:32px;">Everything you need to know to get started on BetBoard.</p>
+
+<div class="how-to-grid">
+
+    <div class="how-to-card">
+        <div class="how-to-num">1</div>
+        <h3>Getting Started</h3>
+        <p>Register with your roll number and a username. Your roll number must be in the class directory — unrecognised numbers are blocked.</p>
+        <p>Every new account starts with <strong>1,000 coins</strong>. Coins are your currency for placing bets.</p>
+    </div>
+
+    <div class="how-to-card">
+        <div class="how-to-num">2</div>
+        <h3>Standard Events</h3>
+        <p>Most events are <strong>YES / NO</strong> questions. Click any open event card on the dashboard to open it.</p>
+        <p>Enter how many coins you want to bet, pick a side, and submit. You can only bet once per event, so choose carefully.</p>
+        <p>When the admin resolves the event, winners are paid out based on the odds locked in at the time of their bet.</p>
+    </div>
+
+    <div class="how-to-card">
+        <div class="how-to-num">3</div>
+        <h3>How Odds Work</h3>
+        <p>Odds are <strong>live and parimutuel</strong> — they shift as more people bet. The more coins on one side, the lower that side's payout.</p>
+        <div class="how-to-example">
+            <div style="margin-bottom:6px; font-size:0.8rem; color:#9a8c78; text-transform:uppercase; letter-spacing:0.04em;">Example</div>
+            <div style="display:flex; gap:16px; flex-wrap:wrap;">
+                <div>YES pool: 1,000 coins<br><span style="color:#758956; font-weight:700;">YES odds: 1.5×</span></div>
+                <div>NO pool: 500 coins<br><span style="color:#c4933f; font-weight:700;">NO odds: 3.0×</span></div>
+            </div>
+        </div>
+        <p style="margin-top:12px;">Your payout if you win = <strong>coins bet × odds at time of your bet</strong>. Odds lock in the moment you submit.</p>
+    </div>
+
+    <div class="how-to-card">
+        <div class="how-to-num">4</div>
+        <h3>Most Likely To (MLT) Events</h3>
+        <p>MLT events run in two phases:</p>
+        <ol style="padding-left:18px; color:#9a8c78; line-height:1.9;">
+            <li><strong style="color:#e8dfc8;">Nomination</strong> — submit one anonymous vote for whoever you think fits the question. Search by name or roll number.</li>
+            <li><strong style="color:#e8dfc8;">Betting</strong> — the top 5 nominees are revealed. Bet on who you think the admin will pick as the winner.</li>
+        </ol>
+        <p>Odds per nominee work the same way — the more bets a nominee gets, the lower the payout.</p>
+    </div>
+
+    <div class="how-to-card">
+        <div class="how-to-num">5</div>
+        <h3>Leaderboard</h3>
+        <p>There are three leaderboard tabs:</p>
+        <ul style="padding-left:18px; color:#9a8c78; line-height:1.9;">
+            <li><strong style="color:#e8dfc8;">Weekly</strong> — total profit from resolved bets in the last 7 days.</li>
+            <li><strong style="color:#e8dfc8;">All-Time</strong> — current coin balance ranking across all users.</li>
+            <li><strong style="color:#e8dfc8;">Group</strong> — groups ranked by total coins held by their members.</li>
+        </ul>
+        <p>Click any username on the All-Time tab to view their public profile and stats.</p>
+    </div>
+
+    <div class="how-to-card">
+        <div class="how-to-num">6</div>
+        <h3>Groups</h3>
+        <p>Groups let you compete with a specific set of classmates.</p>
+        <ul style="padding-left:18px; color:#9a8c78; line-height:1.9;">
+            <li>Create a group and invite others by roll number.</li>
+            <li>Invited users who haven't registered yet will be auto-added when they sign up.</li>
+            <li>Group P&amp;L tracks how much each member has gained or lost since joining.</li>
+            <li>Groups are capped at 10 members.</li>
+        </ul>
+    </div>
+
+</div>
+
+<div class="how-to-tip">
+    <span style="color:#c4933f; font-weight:700; margin-right:8px;">Tip</span>
+    Watch the odds before betting. If everyone is rushing to one side, the other side may offer a much better payout — if you think they're wrong.
+</div>
+
+{% if not session.get('user_id') %}
+<div style="text-align:center; margin-top:32px;">
+    <a href="{{ url_for('auth.register') }}" style="display:inline-block; padding:10px 28px; background:#2f5d20; color:#e8dfc8; border-radius:6px; text-decoration:none; font-weight:600;">Register to Play</a>
+</div>
+{% endif %}
+
+{% endblock %}

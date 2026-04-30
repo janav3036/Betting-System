@@ -6,7 +6,7 @@
 {%if invites%}
 <h3 style="font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">Pending Invites</h3>
 {% for item in invites %}
-<div class="event-card" style="display: flex; justify-content: space-between; align-items: center;">
+<div class="event-card" style="display: flex; justify-content: space-between; align-items: center; aspect-ratio: unset;">
     <div>
         <strong style="color: #e8dfc8;">{{ item.group.name }}</strong>
         <p style="margin: 4px 0; font-size: 0.85rem;">{{ item.member_count }} members</p>
@@ -24,7 +24,7 @@
 <h3 style="font-size: 0.85rem; text-transform: uppercase; margin: 20px 0 10px;">Active Groups</h3>
 {% for item in active %}
 <a href="{{ url_for('groups.group_detail', group_id=item.group.id) }}" style="text-decoration: none;">
-    <div class="event-card" style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="event-card" style="display: flex; justify-content: space-between; align-items: center; aspect-ratio: unset;">
         <div>
             <strong style="color: #e8dfc8;">{{ item.group.name }}</strong>
             {% if item.is_owner %}<span style="color: #c4933f; font-size: 0.75rem; margin-left: 8px;">OWNER</span>{%

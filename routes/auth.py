@@ -89,6 +89,7 @@ def login():
 
         if user and bcrypt.checkpw(password.encode(), user.password_hash.encode()):
             session['user_id'] = user.id
+            session['new_login'] = True
             return redirect(url_for('betting.dashboard'))
         
         error='Invalid username or password'
@@ -153,7 +154,8 @@ def profile():
         wins = wins,
         losses = losses,
         win_rate = win_rate,
-        total_pnl = round(total_pnl,2)
+        total_pnl = round(total_pnl,2), 
+        rank=rank
     )
 
 
@@ -241,6 +243,13 @@ def delete_account():
     session.clear()
 
     return redirect(url_for('auth.login'))
+
+@auth_bp.route('/how-to')
+def how_to():
+    current_user = None
+    if 'user_id' in session:
+        current_user = db.session.get(User, session['user_id'])
+    return render_template('how_to.html', current_user=current_user)
 
 @auth_bp.route('/user/<int:user_id>')
 def user_profile(user_id):
