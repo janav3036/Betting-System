@@ -6,7 +6,8 @@
     <p>Role: <strong>Admin</strong></p>
     <div style="margin-top: 16px;">
         <a href="{{ url_for('admin.create_event') }}" class="nav-link">Create Event →</a><br><br>
-        <a href="{{ url_for('admin.admin_groups') }}" class="nav-link">Manage Groups →</a>
+        <a href="{{ url_for('admin.admin_groups') }}" class="nav-link">Manage Groups →</a><br><br>
+        <a href="{{ url_for('admin.download_db') }}" class="nav-link">Download Database →</a>
     </div>
     <div class="danger-zone">
         <form action="/delete_account" method="POST" onsubmit="return confirm('Permanently delete your account? This cannot be undone.');">

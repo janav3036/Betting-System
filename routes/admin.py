@@ -1,4 +1,5 @@
-from flask import Blueprint, request, redirect, url_for, session, render_template
+from flask import Blueprint, request, redirect, url_for, session, render_template, send_file
+import os
 from models import db, Event, User, Bet, Group, GroupMembership, GroupActivityLog, PendingInvite, Nominee, Nomination
 
 admin_bp = Blueprint("admin", __name__)
@@ -202,3 +203,13 @@ def nomination_counts(event_id):
         {"roll": roll, "name": students.get(roll, roll), "count": count}
         for roll, count in top5
     ])
+
+@admin_bp.route('/admin/download-db')
+def download_db():
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+    user = db.session.get(User, session['user_id'])
+    if not user.is_admin:
+        return "Not authorized", 403
+    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'instance', 'database.db')
+    return send_file(os.path.abspath(db_path), as_attachment=True, download_name='database.db')
