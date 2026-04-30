@@ -204,6 +204,51 @@ def nomination_counts(event_id):
         for roll, count in top5
     ])
 
+@admin_bp.route('/admin/events')
+def admin_events():
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+    user = db.session.get(User, session['user_id'])
+    if not user.is_admin:
+        return "Not authorized", 403
+
+    events = Event.query.order_by(Event.created_at.desc()).all()
+    event_data = [
+        {'event': e, 'bet_count': Bet.query.filter_by(event_id=e.id).count()}
+        for e in events
+    ]
+    return render_template('admin_events.html', current_user=user, event_data=event_data)
+
+
+@admin_bp.route('/admin/events/<int:event_id>/delete', methods=['POST'])
+def delete_event(event_id):
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+    user = db.session.get(User, session['user_id'])
+    if not user.is_admin:
+        return "Not authorized", 403
+
+    event = db.session.get(Event, event_id)
+    if not event:
+        return "Event not found", 404
+
+    if event.status == 'open':
+        bets = Bet.query.filter_by(event_id=event_id).all()
+        for bet in bets:
+            bettor = db.session.get(User, bet.user_id)
+            if bettor:
+                bettor.coins += bet.amount
+            db.session.delete(bet)
+    else:
+        Bet.query.filter_by(event_id=event_id).delete()
+
+    Nomination.query.filter_by(event_id=event_id).delete()
+    Nominee.query.filter_by(event_id=event_id).delete()
+    db.session.delete(event)
+    db.session.commit()
+    return redirect(url_for('admin.admin_events'))
+
+
 @admin_bp.route('/admin/download-db')
 def download_db():
     if 'user_id' not in session:

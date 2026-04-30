@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>All Events</h2>
+
+{% if event_data %}
+<table style="margin-top: 16px;">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Phase</th>
+            <th>Status</th>
+            <th>Result</th>
+            <th>Bets</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in event_data %}
+        {% set e = row.event %}
+        <tr>
+            <td>
+                <div style="font-weight:600; color:#e8dfc8;">{{ e.title }}</div>
+                <div style="font-size:0.8rem; color:#6a5e4e; margin-top:2px;">{{ e.description }}</div>
+            </td>
+            <td>{{ "Most Likely To" if e.event_type == "most_likely_to" else "Standard" }}</td>
+            <td>{{ e.phase | capitalize if e.phase else "—" }}</td>
+            <td>
+                {% if e.status == "open" %}
+                <span style="color:#758956; background:rgba(47,93,32,0.15); padding:2px 8px; border-radius:4px; font-size:0.8rem;">Open</span>
+                {% else %}
+                <span style="color:#9a8c78; background:#1a1810; padding:2px 8px; border-radius:4px; font-size:0.8rem;">Resolved</span>
+                {% endif %}
+            </td>
+            <td>{{ e.result if e.result else "—" }}</td>
+            <td>{{ row.bet_count }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin.delete_event', event_id=e.id) }}"
+                    onsubmit="return confirm('{% if e.status == \"open\" %}Delete \"{{ e.title }}\"? All {{ row.bet_count }} bet(s) will be refunded.{% else %}Delete \"{{ e.title }}\"? This cannot be undone.{% endif %}')">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" style="background:#8b3020; color:#e8dfc8; padding:5px 12px; font-size:0.8rem; margin:0;">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="color:#9a8c78; margin-top:16px;">No events yet.</p>
+{% endif %}
+
+{% endblock %}
