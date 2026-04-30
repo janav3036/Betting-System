@@ -3,7 +3,7 @@
 
 <head>
     <title>Class Prediction Market</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" </head>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}"> </head>
 
 <body>
 
@@ -42,6 +42,10 @@
         {% block content %}{% endblock %}
     </div>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <footer style="text-align:center; padding: 10px;  border-top: 1px solid #2e2e4e; color: #555; font-size: 0.85rem; ">
+        BetBoard &copy; 2026
+    </footer>
+
 </body>
 
 </html>

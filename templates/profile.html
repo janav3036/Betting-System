@@ -26,15 +26,20 @@
                 <div class="stat-label">Net P&L</div>
                 <div class="stat-value">{{"+" if total_pnl>=0}}{{total_pnl}}</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-label">All-Time Rank</div>
+                <div class="stat-value">#{{ rank }}</div>
+            </div>
         </div>
     </div>
-    <div style="margin-top: 32px; border-top: 1px solid #2e2e4e; padding-top: 16px;">
+    <div style="margin-top: 10px;">
+        <a href="{{ url_for('auth.my_bets') }}" class="nav-link">View all bets →</a>
+    </div>
+    <div style="margin-top: 20px; border-top: 1px solid #2e2e4e; padding-top: 16px;">
         <form action="/delete_account" method="POST" onsubmit="return confirm('Permanently delete your account? This cannot be undone.');">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" style="background:#c0392b; color:white; padding:8px 16px; border-radius:5px;">Delete Account</button>
         </form>
     </div>
-
-    <a href="{{ url_for('auth.my_bets') }}" class="nav-link">View all bets →</a>
 </div>
 {%endblock%}

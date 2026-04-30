@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ viewed_user.username }}</h2>
+<p style="color:#aaa;">{{ viewed_user.coins }} coins</p>
+
+<div class="stats-row" style="margin: 1.5rem 0;">
+    <div class="stat-card">
+        <div class="stat-label">All-Time Rank</div>
+        <div class="stat-value">#{{ rank }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Total Bets</div>
+        <div class="stat-value">{{ total_bets }}</div>
+    </div>
+    <div class="stat-card green">
+        <div class="stat-label">Wins</div>
+        <div class="stat-value">{{ wins }}</div>
+    </div>
+    <div class="stat-card red">
+        <div class="stat-label">Losses</div>
+        <div class="stat-value">{{ losses }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Win Rate</div>
+        <div class="stat-value">{{ win_rate }}</div>
+    </div>
+    <div class="stat-card {{ 'green' if total_pnl >= 0 else 'red' }}">
+        <div class="stat-label">Net P&L</div>
+        <div class="stat-value">{{ "+" if total_pnl >= 0 }}{{ total_pnl }}</div>
+    </div>
+</div>
+{% endblock %}

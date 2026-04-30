@@ -17,7 +17,7 @@
                 <td>{{ e.name }}</td>
                 <td>{{ e.roll_number }}</td>
                 <td>
-                    {% if e.registered %}Registered{% else %}—{% endif %}
+                    {% if e.registered %}Registered     {% else %}—{% endif %}
                     {% if current_user.is_admin and e.registered %}
                     <form action="/admin/users/{{ e.user_id }}/delete" method="POST" style="display:inline;">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

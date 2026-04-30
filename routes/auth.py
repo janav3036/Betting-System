@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect,url_for, session
 from models import db, Bet, Event, User, PendingInvite, GroupMembership, Group,GroupActivityLog, Nomination
+from sqlalchemy.exc import IntegrityError
 import bcrypt
 import csv
 import os
@@ -48,10 +49,15 @@ def register():
             password_hash = enc_password.decode(),
             coins = 1000
         )
+        try:
 
-        db.session.add(user)
-        db.session.commit()
-
+            db.session.add(user)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return render_template('register.html',
+                                   error="Roll number already registered. ",
+                                   students=load_students)
         pending = PendingInvite.query.filter_by(roll_number=roll_number).all()
         for invite in pending:
             membership = GroupMembership(
@@ -136,6 +142,9 @@ def profile():
 
     resolved = wins+losses
     win_rate = round(wins/resolved,1) if resolved>0 else 0
+
+    all_users = User.query.filter_by(is_admin=False).order_by(User.coins.desc()).all()
+    rank = next((i + 1 for i, u in enumerate(all_users) if u.id == user.id), None)
 
     return render_template(
         'profile.html',
@@ -233,4 +242,44 @@ def delete_account():
 
     return redirect(url_for('auth.login'))
 
+@auth_bp.route('/user/<int:user_id>')
+def user_profile(user_id):
+    if "user_id" not in session:
+        return redirect(url_for('auth.login'))
     
+    current_user = db.session.get(User, session['user_id'])
+    viewed_user = db.session.get(User, user_id)
+
+    if viewed_user is None or viewed_user.is_admin:
+        return redirect(url_for('betting.dashboard'))
+    
+    bets = Bet.query.filter_by(user_id=viewed_user.id).all()
+    wins=losses=0
+    total_pnl=0
+
+    for bet in bets:
+        event = Event.query.get(bet.event_id)
+        if event.status == 'resolved':
+            if bet.side == event.result:
+                total_pnl += round((bet.amount * bet.odds_at_time) - bet.amount, 2)
+                wins+=1
+            else:
+                total_pnl -= bet.amount
+                losses+=1
+
+    resolved = wins+losses
+    win_rate = round(wins/resolved, 1) if resolved>1 else 0
+    all_users = User.query.filter_by(is_admin=False).order_by(User.coins.desc()).all()
+    rank = next((i + 1 for i, u in enumerate(all_users) if u.id == viewed_user.id), None)
+
+    return render_template(
+        'user_profile.html',
+        current_user=current_user,
+        viewed_user=viewed_user,
+        wins=wins,
+        losses=losses,
+        win_rate=win_rate,
+        total_pnl=round(total_pnl, 2),
+        total_bets=len(bets),
+        rank=rank
+    )

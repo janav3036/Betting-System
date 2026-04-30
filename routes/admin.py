@@ -178,3 +178,27 @@ def admin_delete_user(user_id):
     db.session.commit()
 
     return redirect(url_for("auth.directory"))
+
+@admin_bp.route('/admin/mlt/<int:event_id>/nominations')
+def nomination_counts(event_id):
+    if "user_id" not in session:
+        return {"error" : "unauthorized"}, 401
+    user= db.session.get(User, session['user_id'])
+    if not user.is_admin:
+        return {"error": "Not authorized"}, 403
+    
+    from routes.auth import load_students
+    from flask import jsonify
+
+    nominations = Nomination.query.filter_by(event_id=event_id).all()
+    counts={}
+    for n in nominations:
+        counts[n.roll_number] = counts.get(n.roll_number, 0)+1
+
+    students = {s['roll_number'] : s['name'] for s in load_students()}
+    top5 = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:5]
+
+    return jsonify([
+        {"roll": roll, "name": students.get(roll, roll), "count": count}
+        for roll, count in top5
+    ])

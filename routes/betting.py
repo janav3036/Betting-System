@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import case
 from models import db, Event, Bet, User, Group, GroupMembership, Nomination, Nominee
+from routes.auth import load_students
 
 betting_bp = Blueprint("betting", __name__)
 
@@ -109,7 +110,8 @@ def dashboard():
     return render_template(
         "dashboard.html",
         event_data=event_data,
-        current_user=user
+        current_user=user,
+        students=load_students()
     )
 
 

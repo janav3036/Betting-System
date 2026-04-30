@@ -1,33 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
-{%if error%}
-        <div style="margin-bottom: 15px; color: red;">
-            {{error}}
-        </div>
-{%endif%}
-<h2>Create New Event</h2>
-<div class="event-card"> 
+
+<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
     <form class="auth-form" method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <div style="margin-bottom: 15px;">
-            <label><strong>Event Title</strong></label><br>
-            <input type="text" name="title" placeholder="Example: Professor will be late" required style="width: 400px; padding: 6px;">
-        </div>
+        <h2 style="margin:0 0 20px 0;">Create Event</h2>
 
-        <div style="margin-bottom: 15px;">
-            <label><strong>Description</strong></label><br>
-            <input type="text" name="description" placeholder="Example: Between Monday and Wednesday" required style="width: 400px; padding: 6px;">
-        </div>
+        {% if error %}
+        <div class="error-msg">{{ error }}</div>
+        {% endif %}
 
-        <div>
-            <label>Event Type</label>
-                <select name="event_type">
-                    <option value="standard">Standard (YES/NO)</option>
-                    <option value="most_likely_to">Most Likely To</option>
-                </select>
+        <label>Event Title</label>
+        <input type="text" name="title" placeholder="e.g. Professor will be late" required>
 
-        </div>
+        <label>Description</label>
+        <textarea name="description" placeholder="e.g. Between Monday and Wednesday" rows="3" required></textarea>
+
+        <label>Event Type</label>
+        <select name="event_type" style="
+            background: #1a1a2e;
+            border: 1px solid #2e2e4e;
+            color: #e0e0e0;
+            padding: 7px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            width: 100%;
+            margin-bottom: 14px;
+            box-sizing: border-box;
+            color-scheme: dark;
+        ">
+            <option value="standard">Standard (YES / NO)</option>
+            <option value="most_likely_to">Most Likely To</option>
+        </select>
 
         <button type="submit">Create Event</button>
     </form>
