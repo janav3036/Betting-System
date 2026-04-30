@@ -2,13 +2,19 @@
 <html>
 
 <head>
-    <title>Class Prediction Market</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}"> </head>
+    <title>BetBoard</title>
+    <link rel="icon" type="image" href="{{ url_for('static', filename='transparent-image.png') }}">
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}"> 
+</head>
 
 <body>
 
     <nav class="navbar">
-        <a href="{{ url_for('betting.dashboard') }}" class="nav-brand">BetBoard</a>
+        <a href="{{ url_for('betting.dashboard') }}" class="nav-brand">
+            <img src="{{ url_for('static', filename='transparent-image.png') }}" alt="BetBoard" style="height:32px; vertical-align:middle; margin-right:8px;">BetBoard
+        </a>
+
         {%if session.get('user_id')%}
         <div class="nav-right">
             <a href="{{ url_for('betting.dashboard') }}" class="nav-link">Home</a>
@@ -42,7 +48,7 @@
         {% block content %}{% endblock %}
     </div>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <footer style="text-align:center; padding: 10px;  border-top: 1px solid #2e2e4e; color: #555; font-size: 0.85rem; ">
+    <footer class="site-footer">
         BetBoard &copy; 2026
     </footer>
 

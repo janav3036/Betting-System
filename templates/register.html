@@ -8,7 +8,7 @@
         <h2 style="margin:0 0 20px 0;">Register</h2>
 
         {% if error %}
-        <div style="color:red; margin-bottom:12px;">{{ error }}</div>
+        <div class="error-msg">{{ error }}</div>
         {% endif %}
 
         <label><strong>Username</strong></label>
@@ -27,7 +27,7 @@
         <button type="submit">Register</button>
     </form>
 
-    <p style="margin-top:12px; font-size:0.9rem; color:#aaa;">
+    <p style="margin-top:12px; font-size:0.9rem; color:#9a8c78;">
         Already have an account? <a href="{{ url_for('auth.login') }}">Login</a>
     </p>
 </div>
@@ -48,7 +48,7 @@ searchInput.addEventListener('input', function () {
     matches.slice(0, 6).forEach(s => {
         const li = document.createElement('li');
         li.textContent = s.name + ' — ' + s.roll_number;
-        li.style.cssText = 'cursor:pointer; padding:6px 8px; border-bottom:1px solid #333;';
+        li.style.cssText = 'cursor:pointer; padding:6px 8px; border-bottom:1px solid #3d2e1e;';
         li.addEventListener('click', function () {
             rollInput.value = s.roll_number;
             searchInput.value = s.name;

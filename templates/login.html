@@ -1,31 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2 style="margin-top: 0;">Login</h2>
 <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh;">
     <form class="auth-form" method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        {%if error%}
-        <div style="margin-bottom: 15px; color: red;">
-            {{error}}
-        </div>
-        {%endif%}
-        <div style="margin-bottom: 15px;">
-            <label><strong>Username</strong></label>
-            <input type="text" name="username" placeholder="Enter username" required style="width: 300px; padding: 6px;">
+        <h2 style="margin:0 0 20px 0;">Login</h2>
 
-        </div>
-        <div style="margin-bottom: 15px;">
-            <label><strong>Password</strong></label>
-            <input type="password" name="password" placeholder="Enter password" required style="width: 300px; padding: 6px;">
+        {% if error %}
+        <div class="error-msg">{{ error }}</div>
+        {% endif %}
 
-        </div>    
-        <button type="submit">Login</button>  
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter username" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter password" required>
+
+        <button type="submit">Login</button>
     </form>
-    <div style="margin-top: 15px;">
-        Don't have an account? 
-        <a href="{{url_for('auth.register')}}">Register</a>
-    </div>
+
+    <p style="margin-top:12px; font-size:0.9rem; color:#9a8c78;">
+        Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a>
+    </p>
 </div>
+
 {% endblock %}

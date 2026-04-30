@@ -4,8 +4,7 @@
     <h2>{{current_user.username}}'s Profile</h2>
     <p>Balance: <strong>{{current_user.coins}}</strong> coins</p>
 
-    <div style="display:flex; gap:12px; flex-wrap: wrap; margin: 16px 0;">
-        <div class="stats-row">
+    <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-label">Total Bets</div>
                 <div class="stat-value">{{bet_data | length}}</div>
@@ -30,15 +29,16 @@
                 <div class="stat-label">All-Time Rank</div>
                 <div class="stat-value">#{{ rank }}</div>
             </div>
-        </div>
     </div>
+
+    
     <div style="margin-top: 10px;">
         <a href="{{ url_for('auth.my_bets') }}" class="nav-link">View all bets →</a>
     </div>
-    <div style="margin-top: 20px; border-top: 1px solid #2e2e4e; padding-top: 16px;">
+    <div class="danger-zone">
         <form action="/delete_account" method="POST" onsubmit="return confirm('Permanently delete your account? This cannot be undone.');">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" style="background:#c0392b; color:white; padding:8px 16px; border-radius:5px;">Delete Account</button>
+            <button type="submit" style="background:#8b3020; color:#e8dfc8; padding:8px 16px; border-radius:5px;">Delete Account</button>
         </form>
     </div>
 </div>

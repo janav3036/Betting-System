@@ -8,10 +8,10 @@
         <a href="{{ url_for('admin.create_event') }}" class="nav-link">Create Event →</a><br><br>
         <a href="{{ url_for('admin.admin_groups') }}" class="nav-link">Manage Groups →</a>
     </div>
-    <div style="margin-top: 32px; border-top: 1px solid #2e2e4e; padding-top: 16px;">
+    <div class="danger-zone">
         <form action="/delete_account" method="POST" onsubmit="return confirm('Permanently delete your account? This cannot be undone.');">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" style="background:#c0392b; color:white; padding:8px 16px; border-radius:5px;">Delete Account</button>
+            <button type="submit" style="background:#8b3020; color:#e8dfc8; padding:8px 16px; border-radius:5px;">Delete Account</button>
         </form>
     </div>
 

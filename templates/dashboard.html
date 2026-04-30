@@ -41,7 +41,10 @@
             data-no-prob="{{ data.no_prob }}"
             data-is-admin="{{ 'true' if current_user.is_admin else 'false' }}"
             onclick="openModal(this)">
-            <h3>{{ event.title }}</h3>
+            <div>
+                <h3>{{ event.title }}</h3>
+                <p style="font-size:0.8rem; color:#9a8c78; margin:6px 0 0; overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;">{{ event.description }}</p>
+            </div>
             <span class="card-meta">{{ meta }}</span>
         </div>
 
@@ -61,8 +64,14 @@
         {% set event = data.event %}
         {% if event.status == "resolved" %}
         {% set ns2.found = true %}
-        <div class="event-card" style="cursor: default;">
+        <div class="event-card"
+            data-title="{{ event.title }}"
+            data-desc="{{ event.description }}"
+            data-result="{{ event.result }}"
+            data-status="resolved"
+            onclick="openModal(this)">
             <h3>{{ event.title }}</h3>
+            <p style="font-size:0.8rem; color:#9a8c78; margin:6px 0 0; overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;">{{ event.description }}</p>
             <span class="card-meta">Result: {{ event.result }}</span>
         </div>
         {% endif %}
@@ -121,14 +130,17 @@ const students = {{students | tojson}};
 function openModal(card) {
     const d = card.dataset;
     document.getElementById('modal-title').textContent = d.title;
-    document.getElementById('modal-meta').textContent = d.meta;
+    document.getElementById('modal-meta').textContent = d.meta || 'Resolved';
     document.getElementById('modal-desc').textContent = d.desc;
 
     const body = document.getElementById('modal-body');
     body.innerHTML = '';
     const isAdmin = d.isAdmin === 'true';
 
-    if (d.type === 'standard') {
+    if (d.status === 'resolved') {
+        body.innerHTML = `<p style="color:#9a8c78; font-size:0.85rem;">Result</p>
+            <p style="font-size:1.1rem; font-weight:700; color:#e8dfc8;">${d.result}</p>`;
+    } else if (d.type === 'standard') {
         buildStandardBody(body, d, isAdmin);
     } else {
         buildMLTBody(body, d, isAdmin);
@@ -141,9 +153,9 @@ function buildStandardBody(body, d, isAdmin) {
     if (isAdmin) {
         const resolveDiv = document.getElementById('resolve-' + d.id);
         const links = resolveDiv ? resolveDiv.querySelectorAll('a') : [];
-        let html = '<p style="color:#aaa; font-size:0.85rem;">Resolve event:</p><div style="display:flex; gap:10px;">';
+        let html = '<p style="color:#9a8c78; font-size:0.85rem;">Resolve event:</p><div style="display:flex; gap:10px;">';
         links.forEach(a => {
-            html += `<a href="${a.href}" style="padding:6px 18px; background:#2e2e4e; border-radius:5px; color:#e0e0e0; text-decoration:none;">${a.textContent}</a>`;
+            html += `<a href="${a.href}" style="padding:6px 18px; background:#2e2818; border-radius:5px; color:#e8dfc8; text-decoration:none;">${a.textContent}</a>`;
         });
         html += '</div>';
         body.innerHTML = html;
@@ -152,9 +164,9 @@ function buildStandardBody(body, d, isAdmin) {
 
     if (d.userBetSide) {
         body.innerHTML = `
-            <p style="color:#aaa; font-size:0.85rem;">Your bet</p>
+            <p style="color:#9a8c78; font-size:0.85rem;">Your bet</p>
             <p><strong>${d.userBetSide}</strong> — ${d.userBetAmount} coins @ ${d.userBetOdds}x</p>
-            <p style="color:#aaa; font-size:0.8rem; margin-top:12px;">Yes Pool: ${d.yesPool} | No Pool: ${d.noPool}</p>
+            <p style="color:#9a8c78; font-size:0.8rem; margin-top:12px;">Yes Pool: ${d.yesPool} | No Pool: ${d.noPool}</p>
             <div class="probability-bar" style="margin-top:8px;">
                 <div class="yes-bar" style="width:${d.yesProb}%">YES ${d.yesProb}%</div>
                 <div class="no-bar" style="flex:1">NO ${d.noProb}%</div>
@@ -163,8 +175,8 @@ function buildStandardBody(body, d, isAdmin) {
     }
 
     body.innerHTML = `
-        <p style="color:#aaa; font-size:0.8rem;">Yes Pool: ${d.yesPool} | No Pool: ${d.noPool}</p>
-        <p style="color:#aaa; font-size:0.8rem;">Yes Odds: ${d.yesOdds} | No Odds: ${d.noOdds}</p>
+        <p style="color:#9a8c78; font-size:0.8rem;">Yes Pool: ${d.yesPool} | No Pool: ${d.noPool}</p>
+        <p style="color:#9a8c78; font-size:0.8rem;">Yes Odds: ${d.yesOdds} | No Odds: ${d.noOdds}</p>
         <div class="probability-bar" style="margin:10px 0 18px;">
             <div class="yes-bar" style="width:${d.yesProb}%">YES ${d.yesProb}%</div>
             <div class="no-bar" style="flex:1">NO ${d.noProb}%</div>
@@ -191,7 +203,7 @@ function buildMLTBody(body, d, isAdmin) {
     if (d.phase === 'nomination') {
         if (isAdmin) {
             body.innerHTML = `
-                <p style="color:#aaa; font-size:0.85rem; margin-bottom:8px;">Live vote standings:</p>
+                <p style="color:#9a8c78; font-size:0.85rem; margin-bottom:8px;">Live vote standings:</p>
                 <div id="nom-live-standings"></div>
                 <form action="/admin/mlt/${d.id}/reveal" method="POST" style="margin-top:16px;">
                     <input type="hidden" name="csrf_token" value="${csrfToken}">
@@ -205,11 +217,11 @@ function buildMLTBody(body, d, isAdmin) {
                         const el = document.getElementById('nom-live-standings');
                         if (!el) return;
                         el.innerHTML = data.length === 0
-                            ? '<p style="color:#666; font-size:0.85rem;">No votes yet.</p>'
+                            ? '<p style="color:#6a5e4e; font-size:0.85rem;">No votes yet.</p>'
                             : data.map((row, i) => `
-                                <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #2e2e4e; font-size:0.85rem;">
-                                    <span>${i + 1}. ${row.name} <span style="color:#888;">(${row.roll})</span></span>
-                                    <span style="color:#a0a0b8;">${row.count} vote${row.count !== 1 ? 's' : ''}</span>
+                                <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #3d2e1e; font-size:0.85rem;">
+                                    <span>${i + 1}. ${row.name} <span style="color:#9a8c78;">(${row.roll})</span></span>
+                                    <span style="color:#9a8c78;">${row.count} vote${row.count !== 1 ? 's' : ''}</span>
                                 </div>`).join('');
                     });
             }
@@ -229,7 +241,7 @@ function buildMLTBody(body, d, isAdmin) {
             body.innerHTML = `<p>You nominated: <strong>${d.userNom}</strong></p>`;
         } else {
             body.innerHTML = `
-                <p style="color:#aaa; font-size:0.85rem;">Submit your anonymous nomination.</p>
+                <p style="color:#9a8c78; font-size:0.85rem;">Submit your anonymous nomination.</p>
                 <input type="text" id="nom-name-search" placeholder="Search by name..." autocomplete="off" style="width:100%; margin-bottom:6px; box-sizing:border-box;">
                 <ul id="nom-name-results" style="list-style:none; padding:0; margin:0 0 10px 0;"></ul>
                 <form action="/nominate" method="POST" style="display:flex; gap:8px; align-items:center; margin-top:4px;">
@@ -254,7 +266,7 @@ function buildMLTBody(body, d, isAdmin) {
                 matches.slice(0, 6).forEach(s => {
                     const li = document.createElement('li');
                     li.textContent = s.name + ' — ' + s.roll_number;
-                    li.style.cssText = 'cursor:pointer; padding:6px 8px; border-bottom:1px solid #2e2e4e; font-size:0.85rem;';
+                    li.style.cssText = 'cursor:pointer; padding:6px 8px; border-bottom:1px solid #3d2e1e; font-size:0.85rem;';
                     li.addEventListener('click', function () {
                         rollInput.value = s.roll_number;
                         nameSearch.value = s.name;
@@ -280,10 +292,10 @@ function buildMLTBody(body, d, isAdmin) {
                 const links = resolveDiv ? resolveDiv.querySelectorAll('a') : [];
                 const resolveLink = [...links].find(a => a.textContent.trim() === roll);
                 body.innerHTML = `
-                    <p style="color:#aaa; font-size:0.85rem; margin-bottom:12px;">Top nominee by votes:</p>
+                    <p style="color:#9a8c78; font-size:0.85rem; margin-bottom:12px;">Top nominee by votes:</p>
                     <div class="nominee-row">
-                        <span>${name} <span style="color:#888; font-size:0.8rem;">${roll}</span></span>
-                        ${resolveLink ? `<a href="${resolveLink.href}" style="padding:5px 14px; background:#2e2e4e; border-radius:5px; color:#e0e0e0; text-decoration:none; font-size:0.85rem;">Resolve</a>` : ''}
+                        <span>${name} <span style="color:#9a8c78; font-size:0.8rem;">${roll}</span></span>
+                        ${resolveLink ? `<a href="${resolveLink.href}" style="padding:5px 14px; background:#2e2818; border-radius:5px; color:#e8dfc8; text-decoration:none; font-size:0.85rem;">Resolve</a>` : ''}
                     </div>`;
             }
             return;
@@ -292,14 +304,14 @@ function buildMLTBody(body, d, isAdmin) {
         if (d.userBetSide) {
             body.innerHTML = `<p>You bet on: <strong>${d.userBetSide}</strong> — ${d.userBetAmount} coins @ ${d.userBetOdds}x</p>`;
         } else {
-            let html = '<p style="color:#aaa; font-size:0.85rem; margin-bottom:12px;">Pick a nominee:</p>';
+            let html = '<p style="color:#9a8c78; font-size:0.85rem; margin-bottom:12px;">Pick a nominee:</p>';
             nomEls.forEach(nom => {
                 const roll = nom.dataset.roll;
                 const odds = nom.dataset.odds;
                 const name = nom.dataset.name;
                 html += `
                     <div class="nominee-row">
-                        <span>${name} <span style="color:#888; font-size:0.8rem;">${roll} · ${odds}x</span></span>
+                        <span>${name} <span style="color:#9a8c78; font-size:0.8rem;">${roll} · ${odds}x</span></span>
                         <form action="/bet" method="POST" style="display:flex; gap:6px; align-items:center;">
                             <input type="hidden" name="csrf_token" value="${csrfToken}">
                             <input type="hidden" name="event_id" value="${d.id}">

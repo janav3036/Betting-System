@@ -1,11 +1,11 @@
 {%extends 'base.html'%}
 {%block content%}
 {% if request.args.get('message') %}
-<div style="background: rgba(46, 204, 113, 0.1); border: 1px solid #2ecc71; border-radius: 6px; padding: 10px 15px; margin-bottom: 15px; color: #2ecc71;">
+<div style="background: rgba(47, 93, 32, 0.15); border: 1px solid #758956; border-radius: 6px; padding: 10px 15px; margin-bottom: 15px; color: #758956;">
     {{ request.args.get('message') }}
 </div>
 {% endif %}
-<h2 style="color: #ffffff; margin-bottom: 20px;">All Groups</h2>
+<h2 style="margin-bottom: 20px;">All Groups</h2>
 {%if group_data%}
 <table>
     <thead>
@@ -20,20 +20,21 @@
     {%for item in group_data%}
     <tr>
         <td>{{item.group.id}}</td>
-        <td><a href="{{ url_for('groups.group_detail', group_id=item.group.id) }}" style="text-decoration: none; color: #ffffff;">{{item.group.name}}</a></td>
+        <td><a href="{{ url_for('groups.group_detail', group_id=item.group.id) }}" style="text-decoration: none; color: #e8dfc8;">{{item.group.name}}</a></td>
         <td>{{item.owner.username}}</td>
         <td>{{item.members}}</td>
         <td>
             <form method="POST" action="{{ url_for('admin.admin_delete_group', group_id=item.group.id) }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit" style="background: #3b5bdb; color: white;">DELETE</button>
+                <button type="submit" style="background: #8b3020; color: #e8dfc8;">DELETE</button>
+
             </form>
         </td>
     </tr>
     {%endfor%}
 </table>
 {%else%}
-<h2 style="color: #ffffff; margin-bottom: 20px;">No Groups Yet</h2>
+<h2 style="margin-bottom: 20px;">No Groups Yet</h2>
 {%endif%}
 
 

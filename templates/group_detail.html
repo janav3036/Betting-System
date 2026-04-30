@@ -2,31 +2,31 @@
 {% block content %}
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h2 style="color: #ffffff; margin: 0;">{{ group.name }}</h2>
+    <h2 style="margin: 0;">{{ group.name }}</h2>
     <a href="{{ url_for('groups.groups') }}" style="font-size: 0.85rem;">← Back to Groups</a>
 </div>
 
 {% if error %}
-<p style="color: #e74c3c; margin-bottom: 15px;">{{ error }}</p>
+<p class="error-msg">{{ error }}</p>
 {% endif %}
 
 <!-- Pending invite confirmation for unregistered roll number -->
 {% if unregistered_roll %}
-<div class="event-card" style="border-color: #f39c12;">
-    <p style="color: #f39c12; margin: 0 0 10px;">No user found with roll number <strong>{{ unregistered_roll
+<div class="event-card" style="border-color: #c4933f;">
+    <p style="color: #c4933f; margin: 0 0 10px;">No user found with roll number <strong>{{ unregistered_roll
             }}</strong>. Send a pending invite anyway?</p>
     <form method="POST" action="{{ url_for('groups.invite', group_id=group.id) }}" style="display: flex; gap: 10px;">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="roll_number" value="{{ unregistered_roll }}">
         <input type="hidden" name="confirm" value="yes">
-        <button type="submit" style="background: #3b5bdb; color: white;">Send Anyway</button>
+        <button type="submit" style="background: #2f5d20; color: #e8dfc8;">Send Anyway</button>
         <a href="{{ url_for('groups.group_detail', group_id=group.id) }}"><button type="button">Cancel</button></a>
     </form>
 </div>
 {% endif %}
 
 <!-- Member Leaderboard -->
-<h3 style="color: #aaa; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">Members</h3>
+<h3 style="color: #9a8c78; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">Members</h3>
 <table>
     <thead>
         <tr>
@@ -44,10 +44,10 @@
             <td>{{ loop.index }}</td>
             <td>
                 {{ m.user.username }}
-                {% if m.is_owner %}<span style="color: #f39c12; font-size: 0.75rem; margin-left: 6px;">OWNER</span>{%
+                {% if m.is_owner %}<span style="color: #c4933f; font-size: 0.75rem; margin-left: 6px;">OWNER</span>{%
                 endif %}
                 {% if m.user.id == current_user.id %}<span
-                    style="color: #aaa; font-size: 0.75rem; margin-left: 6px;">(you)</span>{% endif %}
+                    style="color: #9a8c78; font-size: 0.75rem; margin-left: 6px;">(you)</span>{% endif %}
             </td>
             <td>{{ m.coins }}</td>
             <td class="{{ 'win' if m.pnl >= 0 else 'loss' }}">{{ '+' if m.pnl >= 0 }}{{ m.pnl }}</td>
@@ -56,7 +56,7 @@
                 <form method="POST"
                     action="{{ url_for('groups.remove_member', group_id=group.id, target_id=m.user.id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" style="background: #e74c3c; color: white; font-size: 0.8rem;">Remove</button>
+                    <button type="submit" style="background: #8b3020; color: #e8dfc8; font-size: 0.8rem;">Remove</button>
                 </form>
                 <form method="POST" action="{{ url_for('groups.transfer_ownership', group_id=group.id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -75,7 +75,7 @@
             <td>—</td>
             <td>
                 {{ item.user.username }}
-                <span style="color: #f39c12; font-size: 0.75rem; margin-left: 6px;">INVITED</span>
+                <span style="color: #c4933f; font-size: 0.75rem; margin-left: 6px;">INVITED</span>
             </td>
             <td>—</td>
             <td>—</td>
@@ -85,7 +85,7 @@
                     action="{{ url_for('groups.remove_member', group_id=group.id, target_id=item.membership.user_id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                    <button type="submit" style="background: #e74c3c; color: white; font-size: 0.8rem;">Cancel</button>
+                    <button type="submit" style="background: #8b3020; color: #e8dfc8; font-size: 0.8rem;">Cancel</button>
                 </form>
             </td>
             {% endif %}
@@ -97,7 +97,7 @@
             <td>—</td>
             <td>
                 {{ p.roll_number }}
-                <span style="color: #aaa; font-size: 0.75rem; margin-left: 6px;">AWAITING REGISTRATION</span>
+                <span style="color: #9a8c78; font-size: 0.75rem; margin-left: 6px;">AWAITING REGISTRATION</span>
             </td>
             <td>—</td>
             <td>—</td>
@@ -111,7 +111,7 @@
 
 <!-- Owner Actions -->
 {% if is_owner %}
-<h3 style="color: #aaa; font-size: 0.85rem; text-transform: uppercase; margin: 30px 0 10px;">Invite by Roll Number</h3>
+<h3 style="color: #9a8c78; font-size: 0.85rem; text-transform: uppercase; margin: 30px 0 10px;">Invite by Roll Number</h3>
 <div class="auth-form">
     <form method="POST" action="{{ url_for('groups.invite', group_id=group.id) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -126,7 +126,7 @@
         onsubmit="return confirm('Delete this group? This cannot be undone.')">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <button type="submit" style="background: #e74c3c; color: white;">Delete Group</button>
+        <button type="submit" style="background: #8b3020; color: #e8dfc8;">Delete Group</button>
     </form>
 </div>
 {% endif %}
@@ -137,7 +137,7 @@
     <form method="POST" action="{{ url_for('groups.leave_group', group_id=group.id) }}"
         onsubmit="return confirm('Leave this group?')">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <button type="submit" style="background: #2e2e4e; color: #e74c3c;">Leave Group</button>
+        <button type="submit" style="background: #2e2818; color: #8b3020;">Leave Group</button>
     </form>
 </div>
 {% endif %}
